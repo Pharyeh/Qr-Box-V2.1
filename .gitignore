@@ -7,4 +7,3 @@ build/
 .env
 access.log      
 server/access.log
-client/access.log   
