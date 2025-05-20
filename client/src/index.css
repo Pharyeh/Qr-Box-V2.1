@@ -1,0 +1,67 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ---- QR Box Custom Theme Additions ---- */
+
+/* Font smoothing for all text */
+html {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Custom background gradient for dark mode */
+body {
+  @apply bg-gradient-to-br from-[#101624] via-[#161f31] to-[#202a3d] dark:from-[#090f1c] dark:via-[#131c2b] dark:to-[#202a3d];
+  min-height: 100vh;
+  font-family: 'Inter', 'Segoe UI', Arial, sans-serif;
+}
+
+/* Custom scrollbar for QR Box */
+::-webkit-scrollbar {
+  width: 10px;
+  background: #141b29;
+}
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #3b82f6 20%, #6366f1 80%);
+  border-radius: 8px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #2563eb 10%, #6366f1 90%);
+}
+
+/* Panel glass effect */
+.qrbox-glass {
+  @apply bg-white/10 dark:bg-blue-950/40 backdrop-blur-lg rounded-2xl shadow-xl;
+}
+
+/* Nice transitions for theme toggles */
+* {
+  transition: background-color 0.2s, color 0.2s;
+}
+
+/* Accent colors for headers */
+.qrbox-header {
+  @apply text-blue-400 dark:text-blue-300 font-extrabold tracking-wider;
+}
+
+/* Mini card for sidebar highlight */
+.qrbox-sidebar-active {
+  @apply bg-blue-900/90 text-blue-200;
+}
+
+a {
+  color: #3b82f6;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* Responsive tweaks for mobile */
+@media (max-width: 640px) {
+  .dashboard-grid {
+    @apply grid-cols-1;
+  }
+}

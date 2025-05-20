@@ -1,0 +1,24 @@
+{
+  "name": "qrbox-server",
+  "version": "1.0.0",
+  "description": "QR Box v2.1 Express Server",
+  "main": "server.js",
+  "scripts": {
+    "server": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "keywords": [],
+  "author": "ReflexBox Systems",
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^1.6.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "express-rate-limit": "^7.5.0",
+    "moment": "^2.29.4"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
+  }
+}

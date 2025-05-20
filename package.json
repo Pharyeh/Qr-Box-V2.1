@@ -1,0 +1,29 @@
+{
+  "name": "qr-box",
+  "version": "2.1.0",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "server": "cd server && node server.js",
+    "dist": "electron-builder"
+  },
+  "devDependencies": {
+    "electron": "^27.1.0",
+    "electron-builder": "^24.9.1"
+  },
+  "build": {
+    "appId": "com.qrbox.app",
+    "productName": "QR Box",
+    "files": [
+      "client/build/**/*",
+      "main.js",
+      "server/**/*"
+    ],
+    "directories": {
+      "buildResources": "assets"
+    },
+    "win": {
+      "target": "nsis"
+    }
+  }
+}
