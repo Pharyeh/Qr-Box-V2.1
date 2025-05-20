@@ -5,3 +5,5 @@ client/build/
 client/dist/
 build/
 .env
+access.log      
+server/access.log
