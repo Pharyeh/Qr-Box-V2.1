@@ -2,6 +2,8 @@ const express = require('express');
 const logger = require('./logger');
 const dotenv = require('dotenv');
 const path = require('path');
+const swaggerUi = require('swagger-ui-express');
+const swaggerSpecs = require('./swagger');
 
 dotenv.config({ path: path.join(__dirname, '.env') });
 
@@ -16,12 +18,37 @@ app.use(require('cors')({
   credentials: true
 }));
 
+// Swagger Documentation
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpecs));
+
 // __ Logging ____________________________________________
 app.use(logger);
 
 // __ Active API Routes __________________________________
+/**
+ * @swagger
+ * /api/quantumMetric:
+ *   get:
+ *     summary: Get quantum metrics data
+ *     tags: [Metrics]
+ *     responses:
+ *       200:
+ *         description: Successful response with quantum metrics
+ */
 app.use('/api/quantumMetric', require('./routes/api/quantumMetric'));
+
+/**
+ * @swagger
+ * /api/confidenceTrend:
+ *   get:
+ *     summary: Get confidence trend data
+ *     tags: [Analytics]
+ *     responses:
+ *       200:
+ *         description: Successful response with confidence trend data
+ */
 app.use('/api/confidenceTrend', require('./routes/api/confidenceTrend'));
+
 app.use('/api/TradeLogs', require('./routes/api/TradeLogs'));
 app.use('/api/assetSentiment', require('./routes/api/assetSentiment'));
 app.use('/api/liveTriggers', require('./routes/api/liveTriggers'));
