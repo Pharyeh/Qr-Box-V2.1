@@ -1,58 +1,30 @@
 {
   "name": "qr-box-client",
-  "version": "2.1.0",
-  "description": "QR Box v2.1 — Market Reflex Intelligence",
-  "author": "PharyehNation",
-  "main": "public/electron.js",
-  "homepage": "./",
   "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "start": "electron .",
-    "build": "react-scripts build",
-    "dist": "electron-builder"
-  },
-  "build": {
-    "appId": "com.qrbox.app",
-    "productName": "QR Box",
-    "directories": {
-      "output": "dist"
-    },
-    "files": [
-      "build/**/*",
-      "public/electron.js"
-    ],
-    "win": {
-      "target": "nsis",
-      "icon": "assets/icon.ico"
-    },
-    "nsis": {
-      "oneClick": false,
-      "perMachine": false,
-      "allowToChangeInstallationDirectory": true
-    }
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
   "dependencies": {
-    "chart.js": "^4.4.1",
-    "framer-motion": "^12.12.1",
+    "@heroicons/react": "^2.1.1",
+    "@tailwindcss/typography": "^0.5.10",
+    "autoprefixer": "^10.4.17",
+    "axios": "^1.6.7",
+    "clsx": "^2.1.0",
+    "postcss": "^8.4.35",
     "react": "^18.2.0",
-    "react-chartjs-2": "^5.2.0",
     "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1"
+    "react-router-dom": "^6.22.1",
+    "tailwind-merge": "^2.2.1",
+    "tailwindcss": "^3.4.1"
   },
   "devDependencies": {
-    "electron": "^25.9.0",
-    "electron-builder": "^24.13.3"
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+    "@types/react": "^18.2.55",
+    "@types/react-dom": "^18.2.19",
+    "@vitejs/plugin-react": "^4.2.1",
+    "vite": "^5.4.19"
   }
 }

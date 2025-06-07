@@ -1,9 +1,30 @@
+# Dependencies
 node_modules/
-client/node_modules/
-server/node_modules/
-client/build/
-client/dist/
-build/
+.pnp/
+.pnp.js
+
+# Environment variables
 .env
-access.log      
-server/access.log
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Build outputs
+dist/
+build/
+out/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor directories and files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store 
