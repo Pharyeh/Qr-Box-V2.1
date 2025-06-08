@@ -1,46 +1,20 @@
 {
-    "main": "main.js",
-    "scripts": {
-        "dev": "concurrently \"npm run client\" \"npm run server\"",
-        "client": "cd client && vite",
-        "build-client": "cd client && vite build",
-        "server": "cd server && node server.js",
-        "dist": "npm run build-client && electron-builder",
-        "start": "electron ."
-    },
-    "devDependencies": {
-        "concurrently": "^8.2.0",
-        "electron": "^28.0.0",
-        "electron-builder": "^24.13.3"
-    },
-    "build": {
-        "appId": "com.qrbox.desktop",
-        "productName": "QR Box",
-        "files": [
-            "main.js",
-            "preload.js",
-            "server/**/*",
-            "client/dist/**/*",
-            "!**/node_modules/**/*"
-        ],
-        "directories": {
-            "buildResources": "client/src/assets",
-            "output": "build"
-        },
-        "win": {
-            "target": "nsis",
-            "icon": "client/src/assets/logo.ico"
-        },
-        "mac": {
-            "icon": "client/src/assets/logo.ico"
-        },
-        "linux": {
-            "icon": "client/src/assets/logo.ico"
-        }
-    },
-    "name": "qr-box",
-    "version": "2.1.0",
-    "description": "QR Box Desktop Dashboard",
-    "author": "Pharyeh Nation",
-    "type": "module"
+  "name": "qr-box",
+  "version": "2.1.0",
+  "description": "QR Box Desktop Dashboard",
+  "author": "Pharyeh Nation",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently \"npm run client\" \"npm run server\"",
+    "client": "cd client && vite",
+    "server": "cd server && node server.js",
+    "build-client": "cd client && vite build",
+    "tauri": "tauri",
+    "tauri:dev": "npx tauri dev",
+    "tauri:build": "npx tauri build"
+  },
+  "devDependencies": {
+    "@tauri-apps/cli": "^2.0.0-rc.18",
+    "concurrently": "^8.2.0"
+  }
 }

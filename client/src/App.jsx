@@ -4,7 +4,6 @@ import PhaseMonitorPanel from './panels/phasemonitor/PhaseMonitorPanel.jsx';
 import TradeIdeasPanel from './panels/tradeideas/TradeIdeasPanel.jsx';
 import GPTThesisPanel from './panels/gptthesis/GPTThesisPanel.jsx';
 import { SunIcon, MoonIcon } from './components/Icons';
-import logo from './assets/logo.ico';
 
 // Fullscreen toggle handler
 function handleToggleFullscreen() {
@@ -55,7 +54,9 @@ export default function App() {
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900 text-slate-800 dark:text-slate-200 p-6 space-y-6 transition-colors duration-200">
       <header className="flex justify-between items-center mb-2 rounded-2xl shadow-xl bg-white/30 dark:bg-slate-800/60 backdrop-blur-lg p-4 border border-white/10 dark:border-slate-700 transition-all duration-300">
         <div className="flex items-center gap-3">
-          <img src={logo} alt="QR Box Logo" className="w-10 h-10 rounded-lg shadow-md" />
+          <div className="w-10 h-10 rounded-lg shadow-md bg-gradient-to-r from-sky-500 to-purple-500 flex items-center justify-center">
+            <span className="text-white font-bold">QR</span>
+          </div>
           <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-sky-500 via-purple-500 to-pink-500 bg-clip-text text-transparent select-none">
             QR Box Dashboard
           </h1>
