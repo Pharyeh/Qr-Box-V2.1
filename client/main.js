@@ -6,6 +6,10 @@ import { spawn } from 'child_process';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 const isDev = process.env.NODE_ENV === 'development';
+const isMac = process.platform === 'darwin';
+const isWindows = process.platform === 'win32';
+const isLinux = process.platform === 'linux';
+
 
 let backendProcess;
 
@@ -26,9 +30,9 @@ function startBackend() {
 
 function createWindow() {
   const mainWindow = new BrowserWindow({
-    width: 1400,
-    height: 900,
-    icon: join(__dirname, 'src', 'assets', 'logo.ico'),
+    width: 1200,
+    height: 800,
+    icon: join(__dirname, 'src', 'assets', 'icon.ico'),
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,

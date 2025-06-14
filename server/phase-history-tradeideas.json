@@ -1,0 +1,706 @@
+{
+  "EURUSD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "GBPUSD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDJPY=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AUDUSD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "NZDUSD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDCAD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDCHF=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "EURGBP=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "EURJPY=X": {
+    "phase": "Phase 2",
+    "timestamp": 1749519832788
+  },
+  "EURCHF=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "EURCAD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "EURAUD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "EURNZD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "GBPJPY=X": {
+    "phase": "Phase 2",
+    "timestamp": 1749522473420
+  },
+  "GBPCHF=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "GBPCAD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "GBPAUD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "GBPNZD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AUDJPY=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AUDNZD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AUDCAD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AUDCHF=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "NZDJPY=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "NZDCAD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749526015485
+  },
+  "NZDCHF=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "CADJPY=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "CADCHF=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "CHFJPY=X": {
+    "phase": "Phase 2",
+    "timestamp": 1749522494070
+  },
+  "USDHKD=X": {
+    "phase": "Phase 2",
+    "timestamp": 1749522494148
+  },
+  "USDSGD=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDSEK=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDDKK=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDNOK=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDPLN=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDZAR=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDTRY=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDMXN=X": {
+    "phase": "Phase 4",
+    "timestamp": 1749517733905
+  },
+  "USDILS=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDINR=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDPHP=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDTHB=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "USDCNY=X": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "BTC-USD": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "ETH-USD": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "XRP-USD": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "DOGE-USD": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "SOL-USD": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "ES=F": {
+    "phase": "Phase 2",
+    "timestamp": 1749518785934
+  },
+  "NQ=F": {
+    "phase": "Phase 2",
+    "timestamp": 1749519513431
+  },
+  "YM=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "RTY=F": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "CL=F": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "GC=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "SI=F": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "PL=F": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "PA=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749522539791
+  },
+  "HG=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "ZC=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "ZW=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749522676034
+  },
+  "ZS=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "KC=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "CT=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "CC=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "SB=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "NG=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "BZ=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "ZM=F": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "ZF=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "ZT=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "ZL=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AAPL": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "MSFT": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "GOOG": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AMZN": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "META": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "NVDA": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "TSLA": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AMD": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "INTC": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "CRM": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "ORCL": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "CSCO": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "IBM": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "QCOM": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AVGO": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "MU": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "MRVL": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "LRCX": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "ADI": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "TXN": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "HPE": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "INTU": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "JPM": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "BAC": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "WFC": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "GS": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "MS": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "C": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "BLK": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AXP": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "V": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "MA": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "IVZ": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "KEY": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "HBAN": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "WMT": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "PG": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "KO": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "PEP": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "MCD": {
+    "phase": "Phase 4",
+    "timestamp": 1749517733905
+  },
+  "SBUX": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "NKE": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "NFLX": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "F": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "TGT": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "HD": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "TJX": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "LOW": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "COST": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "T": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "WBA": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "NCLH": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "MAR": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "JNJ": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "PFE": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "MRK": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "ABBV": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "LLY": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "UNH": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "CVS": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "BMY": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "AMGN": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "GILD": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "VTRS": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "STE": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "CNC": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "HCA": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "HUM": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "GLOB": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "SYK": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "XOM": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "CVX": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "COP": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "EOG": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "SLB": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "MPC": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "VLO": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "PSX": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "HES": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "APA": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "HAL": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "PARA": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "WBD": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "DIS": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "CMCSA": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "TME": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "SPOT": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AES": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "PCG": {
+    "phase": "Phase 4",
+    "timestamp": 1749517733905
+  },
+  "ED": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "D": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "DUK": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "DOC": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "HST": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "VMC": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "BXP": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "DLR": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "EQR": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "EQIX": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AVB": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "AMCR": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "NEM": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "FCX": {
+    "phase": "Phase 2",
+    "timestamp": 1749517733905
+  },
+  "NIO": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "BHP": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  },
+  "VALE": {
+    "phase": "Phase 3",
+    "timestamp": 1749517733905
+  }
+}

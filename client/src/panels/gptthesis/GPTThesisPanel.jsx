@@ -1,171 +1,220 @@
 import React, { useEffect, useState } from 'react';
-import { useSymbol } from '../../context/SymbolContext.jsx';
-import PanelWrapper from '../../components/PanelWrapper';
-import { ArrowDownTrayIcon } from '@heroicons/react/24/outline';
-import API_BASE from '../../config/api';
-
-const PERSONAS = [
-  {
-    key: 'execution',
-    label: 'Execution Risk Manager',
-    prompt: '\n[As an execution risk manager, provide a risk-focused commentary on this thesis.]',
-  },
-  {
-    key: 'macro',
-    label: 'Macro Strategist',
-    prompt: '\n[As a macro strategist, provide a macro context commentary on this thesis.]',
-  },
-  {
-    key: 'behavioral',
-    label: 'Behavioral Coach',
-    prompt: '\n[As a behavioral coach, provide a behavioral/psychological perspective on this thesis.]',
-  },
-];
+import ReactMarkdown from 'react-markdown';
+import { FiMaximize2, FiMinimize2, FiCopy, FiCheck } from 'react-icons/fi';
+import { Card, CardContent } from '../../components/ui/card';
+import { ScrollArea } from '../../components/ui/scroll-area';
+import { useSymbolContext } from '../../context/SymbolContext';
 
 export default function GPTThesisPanel() {
-  const { selectedSymbol } = useSymbol();
-  const [persona, setPersona] = useState(PERSONAS[0].key);
-  const [cache, setCache] = useState({}); // { [symbol]: { [persona]: thesis } }
-  const [thesis, setThesis] = useState(null);
+  const { selectedSymbol } = useSymbolContext();
+  const [report, setReport] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
-  const [lastUpdated, setLastUpdated] = useState(null);
-
-  const isPreBreakout = (reflex, structure) => {
-    return parseFloat(reflex) > 0.5 && parseFloat(structure) > 0.35;
-  };
-
-  const fetchThesis = async (symbol, personaKey) => {
-    if (!symbol) return;
-    setLoading(true);
-    setThesis(null);
-    setError(null);
-    const personaObj = PERSONAS.find(p => p.key === personaKey);
-
-    try {
-      const res = await fetch(`${API_BASE}/api/gptthesis?symbol=${symbol}&persona=${personaKey}`);
-      const data = await res.json();
-      const raw = data?.[0];
-
-      let thesisContent = raw?.thesis || 'No thesis returned.';
-      const reflex = raw?.reflex || 0;
-      const structure = raw?.structure || 0;
-
-      if (raw?.phase === 'Phase 1' && isPreBreakout(reflex, structure)) {
-        thesisContent = `⚠️ *Pre-Breakout Detected*. This thesis is speculative. A confirmed breakout (Phase 2) has not yet occurred, but metrics suggest high probability setup.\n\n${thesisContent}`;
-      }
-
-      if (personaObj && personaObj.key !== 'execution') {
-        thesisContent += `\n\n${personaObj.prompt}`;
-      }
-
-      setCache(prev => ({
-        ...prev,
-        [symbol]: {
-          ...(prev[symbol] || {}),
-          [personaKey]: thesisContent,
-        },
-      }));
-
-      setThesis(thesisContent);
-      setLastUpdated(new Date());
-    } catch (err) {
-      setError('Error fetching GPT response.');
-    } finally {
-      setLoading(false);
-    }
-  };
+  const [error, setError] = useState('');
+  const [fullscreen, setFullscreen] = useState(false);
+  const [question, setQuestion] = useState('');
+  const [followup, setFollowup] = useState('');
+  const [followupLoading, setFollowupLoading] = useState(false);
+  const [followupError, setFollowupError] = useState('');
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
-    if (!selectedSymbol) return;
-    if (cache[selectedSymbol]?.[persona]) {
-      setThesis(cache[selectedSymbol][persona]);
-      setError(null);
-      setLoading(false);
+    if (!selectedSymbol) {
+      setReport('');
+      setError('');
       return;
     }
-    fetchThesis(selectedSymbol, persona);
-    // eslint-disable-next-line
-  }, [selectedSymbol, persona]);
 
-  const downloadThesis = () => {
-    if (!thesis) return;
-    const personaLabel = PERSONAS.find(p => p.key === persona)?.label || '';
-    const markdown = `# ${selectedSymbol} Trade Thesis (${personaLabel})\n\n${thesis}`;
-    const blob = new Blob([markdown], { type: 'text/markdown' });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = `${selectedSymbol}-thesis-${persona}.md`;
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    const fetchThesis = async () => {
+      setLoading(true);
+      setError('');
+      setReport('');
+      try {
+        const res = await fetch('/api/gptthesis', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ symbol: selectedSymbol }),
+        });
+        if (!res.ok) throw new Error('GPT failed.');
+        const data = await res.text();
+        setReport(data);
+      } catch (err) {
+        console.error(err);
+        setError('Failed to fetch GPT response.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchThesis();
+  }, [selectedSymbol]);
+
+  const handleAsk = async (e) => {
+    e.preventDefault();
+    if (!question.trim()) return;
+    setFollowup('');
+    setFollowupError('');
+    setFollowupLoading(true);
+    try {
+      const res = await fetch('/api/gptthesis/followup', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ symbol: selectedSymbol, question }),
+      });
+      if (!res.ok) throw new Error('Follow-up failed');
+      const data = await res.text();
+      setFollowup(data);
+    } catch (err) {
+      console.error(err);
+      setFollowupError('Failed to get follow-up.');
+    } finally {
+      setFollowupLoading(false);
+    }
   };
 
-  const renderContent = () => {
-    if (!selectedSymbol) {
-      return (
-        <div className="text-sm text-gray-400">
-          Click a symbol in the Phase Monitor or Trade Ideas panel to generate a thesis.
-        </div>
-      );
-    }
-    if (loading) {
-      return (
-        <div className="flex items-center gap-2 text-sm text-yellow-300 animate-pulse">
-          <div className="w-4 h-4 border-2 border-yellow-300 border-t-transparent rounded-full animate-spin" />
-          Generating trade thesis...
-        </div>
-      );
-    }
-    if (error) {
-      return <div className="text-sm text-red-400">{error}</div>;
-    }
-
-    return (
-      <div className="space-y-4">
-        <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-2">
-          <div className="flex gap-2">
-            {PERSONAS.map(p => (
-              <button
-                key={p.key}
-                onClick={() => setPersona(p.key)}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-200 border border-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-400/50 ${
-                  persona === p.key
-                    ? 'bg-blue-500/20 text-blue-300 border-blue-400 shadow shadow-blue-500/10'
-                    : 'bg-zinc-800 text-gray-300 hover:bg-zinc-700'
-                }`}
-              >
-                {p.label}
-              </button>
-            ))}
-          </div>
-          <button
-            onClick={downloadThesis}
-            className="flex items-center gap-2 px-3 py-1.5 bg-zinc-800 hover:bg-zinc-700 rounded-lg text-sm transition-colors"
-          >
-            <ArrowDownTrayIcon className="w-4 h-4" />
-            Export
-          </button>
-        </div>
-        <div className="prose prose-invert max-w-none">
-          <div className="text-sm whitespace-pre-wrap card-glass p-4 rounded-xl border max-h-[500px] overflow-y-auto animate-fade-in">
-            {thesis}
-          </div>
-        </div>
-      </div>
-    );
+  const handleCopy = async () => {
+    if (!report) return;
+    await navigator.clipboard.writeText(report);
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
   };
 
   return (
-    <PanelWrapper
-      title="GPT Thesis"
-      onRefresh={() => fetchThesis(selectedSymbol, persona)}
-      lastUpdated={lastUpdated}
-      showRefresh={!!selectedSymbol}
-    >
-      {renderContent()}
-    </PanelWrapper>
+    <div className={`p-4 h-full ${fullscreen ? 'fixed inset-0 bg-zinc-950 z-50 overflow-y-auto' : ''}`}>
+      <Card className="h-full border border-zinc-800 rounded-lg bg-gradient-to-br from-zinc-900 to-zinc-950 shadow-xl">
+        <CardContent className="p-4 h-full">
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="text-lg font-bold bg-gradient-to-r from-sky-300 to-sky-500 bg-clip-text text-transparent">
+              🧠 GPT Thesis Generator
+            </h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setFullscreen(!fullscreen)}
+                className="text-white text-xl hover:text-sky-400 transition-colors duration-200"
+              >
+                {fullscreen ? <FiMinimize2 /> : <FiMaximize2 />}
+              </button>
+              <button
+                onClick={handleCopy}
+                className="text-xs bg-zinc-800 hover:bg-zinc-700 text-white px-3 py-1.5 rounded-lg transition-all duration-200 flex items-center gap-1"
+              >
+                {copied ? (
+                  <>
+                    <FiCheck className="text-green-400" />
+                    <span>Copied!</span>
+                  </>
+                ) : (
+                  <>
+                    <FiCopy />
+                    <span>Copy</span>
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+          <div className="text-white text-sm">
+            {loading && (
+              <div className="italic text-zinc-400 animate-pulse">
+                Generating thesis for <span className="text-pink-300">{selectedSymbol}</span>...
+              </div>
+            )}
+
+            {!loading && !report && (
+              <div className="text-zinc-500 text-center py-8">
+                Click a symbol in Trade Ideas to generate a thesis.
+              </div>
+            )}
+
+            {error && (
+              <div className="text-red-400 mt-2 bg-red-900/20 p-3 rounded-lg border border-red-800">
+                {error}
+              </div>
+            )}
+
+            {report && (
+              <ScrollArea className="h-[60vh] mt-2 border border-zinc-700 rounded-lg bg-zinc-950/50 px-4 py-2">
+                <div className="prose prose-invert text-gray-100 text-sm">
+                  <ReactMarkdown
+                    components={{
+                      h1: ({ node, ...props }) => (
+                        <h1 className="text-xl font-bold mt-4 mb-2 text-sky-300" {...props} />
+                      ),
+                      h2: ({ node, ...props }) => (
+                        <h2 className="text-lg font-semibold mt-3 mb-2 text-sky-200" {...props} />
+                      ),
+                      p: ({ node, ...props }) => (
+                        <p className="mb-2 text-sm leading-relaxed" {...props} />
+                      ),
+                      ul: ({ node, ...props }) => (
+                        <ul className="list-disc ml-5 mb-2 space-y-1" {...props} />
+                      ),
+                      li: ({ node, ...props }) => (
+                        <li className="text-sm mb-1" {...props} />
+                      ),
+                      strong: ({ node, ...props }) => (
+                        <strong className="font-semibold text-white bg-zinc-800/50 px-1 rounded" {...props} />
+                      ),
+                    }}
+                  >
+                    {report}
+                  </ReactMarkdown>
+                </div>
+              </ScrollArea>
+            )}
+
+            {report && (
+              <form onSubmit={handleAsk} className="mt-4">
+                <div className="relative">
+                  <input
+                    type="text"
+                    placeholder="Ask follow-up..."
+                    value={question}
+                    onChange={(e) => setQuestion(e.target.value)}
+                    className="w-full p-2 bg-zinc-800 border border-zinc-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-sky-500 focus:border-transparent transition-all duration-200"
+                  />
+                  <button
+                    type="submit"
+                    disabled={followupLoading}
+                    className="mt-2 px-4 py-1.5 bg-gradient-to-r from-sky-600 to-sky-700 hover:from-sky-500 hover:to-sky-600 text-white rounded-lg transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {followupLoading ? 'Thinking...' : 'Ask'}
+                  </button>
+                </div>
+              </form>
+            )}
+
+            {followupLoading && (
+              <div className="text-xs text-gray-500 mt-2 animate-pulse">
+                Processing your question...
+              </div>
+            )}
+            
+            {followupError && (
+              <div className="text-red-400 mt-2 bg-red-900/20 p-3 rounded-lg border border-red-800">
+                {followupError}
+              </div>
+            )}
+
+            {followup && (
+              <div className="mt-4 border-t border-zinc-700 pt-3 text-sm text-gray-300 bg-zinc-900/50 p-4 rounded-lg animate-in fade-in-0 slide-in-from-bottom-2 duration-300">
+                <strong className="text-sky-300">Follow-up:</strong>
+                <ReactMarkdown
+                  components={{
+                    p: ({ node, ...props }) => (
+                      <p className="text-sm mb-2 leading-relaxed" {...props} />
+                    ),
+                    strong: ({ node, ...props }) => (
+                      <strong className="font-semibold text-white bg-zinc-800/50 px-1 rounded" {...props} />
+                    ),
+                  }}
+                >
+                  {followup}
+                </ReactMarkdown>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      </Card>
+    </div>
   );
 }

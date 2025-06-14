@@ -1,0 +1,13 @@
+{
+  "ignore": [
+    "*.json",
+    "phase-history*.json",
+    "data/phase-history*.json"
+  ],
+  "watch": [
+    "*.js",
+    "controllers/*.js",
+    "utils/*.js",
+    "routes/*.js"
+  ]
+} 

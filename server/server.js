@@ -1,28 +1,40 @@
+console.log('--- SERVER STARTING ---');
+
+import { config } from 'dotenv';
+config();
+
+console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.slice(0, 6) + '...' : undefined);
+console.log('OANDA_API_KEY:', process.env.OANDA_API_KEY);
+console.log('OANDA_ACCOUNT_ID:', process.env.OANDA_ACCOUNT_ID);
+console.log('OANDA_BASE_URL:', process.env.OANDA_BASE_URL);
+console.log('All env vars:', process.env);
+
 import express from 'express';
 import cors from 'cors';
-import dotenv from 'dotenv';
-dotenv.config();
 
+// Route imports
 import phaseMonitorRoute from './routes/api/phasemonitor.js';
 import tradeIdeasRoute from './routes/api/tradeideas.js';
 import gptThesisRoute from './routes/api/gptthesis.js';
+import { loadPhaseHistory } from './utils/phaseHistory.js';
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// ROUTE REGISTRATION
+// Register API routes
 app.use('/api/phasemonitor', phaseMonitorRoute);
 app.use('/api/tradeideas', tradeIdeasRoute);
 app.use('/api/gptthesis', gptThesisRoute);
 
-// BASE ENDPOINT
+// Base endpoint
 app.get('/', (req, res) => {
   res.send('🧠 QR Box Options API running');
 });
 
-// START SERVER
+// Start server
 const PORT = process.env.PORT || 5001;
+loadPhaseHistory();  // Initialize phase history on startup
 app.listen(PORT, () => {
   console.log(`🚀 QR Box Options server live on http://localhost:${PORT}`);
 });

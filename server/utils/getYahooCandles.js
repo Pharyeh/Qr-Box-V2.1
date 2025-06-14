@@ -1,50 +1,33 @@
-import yahooFinance from 'yahoo-finance2';
-yahooFinance.suppressNotices(['ripHistorical']);
+import axios from 'axios';
+import { SYMBOL_MAP } from './symbolMapping.js';
 
-const symbolMap = {
-  'XAUUSD=X': 'GC=F',
-  'XAGUSD=X': 'SI=F',
-  'DJI': '^DJI',
-  'IXIC': '^IXIC',
-  'SPX': '^GSPC',
-  'FTSE': '^FTSE',
-  'N225': '^N225',
-};
-
-function toUnix(date) {
-  return Math.floor(date.getTime() / 1000);
-}
-
-export async function getYahooCandles(symbol) {
+/**
+ * Fetch candles from Yahoo Finance
+ * @param {string} symbol - e.g. 'AAPL', 'MSFT', 'EURUSD', etc.
+ * @param {number} count - number of candles to fetch
+ * @returns {Promise<Array>} Array of candle objects [{ time, open, high, low, close, volume }]
+ */
+export async function getYahooCandles(symbol, count = 100) {
+  const symbolInfo = SYMBOL_MAP[symbol];
+  const yahooSymbol = symbolInfo?.yahoo;
+  if (!yahooSymbol) throw new Error(`No Yahoo symbol for ${symbol}`);
+  const url = `https://query1.finance.yahoo.com/v8/finance/chart/${yahooSymbol}`;
   try {
-    const yahooSymbol = symbolMap[symbol] || symbol;
-
-    const endDate = new Date();
-    const startDate = new Date();
-    startDate.setDate(endDate.getDate() - 30);
-
-    const result = await yahooFinance.chart(yahooSymbol, {
-      period1: toUnix(startDate), // ✅ converted to UNIX timestamp
-      period2: toUnix(endDate),
-      interval: '1d'
-    });
-
-    if (!result.quotes || result.quotes.length === 0) {
-      console.error(`[YahooFinance ERROR] ${symbol}: No data available`);
-      return null;
-    }
-
-    return result.quotes.map(q => ({
-      date: q.date,
-      open: q.open,
-      high: q.high,
-      low: q.low,
-      close: q.close,
-      volume: q.volume
+    const res = await axios.get(url, { params: { interval: '1d', range: '2y' } });
+    const result = res.data.chart.result[0];
+    const timestamps = result.timestamp || [];
+    const ohlc = result.indicators.quote[0];
+    return timestamps.slice(-count).map((t, i) => ({
+      time: new Date(t * 1000).toISOString(),
+      open: ohlc.open[i],
+      high: ohlc.high[i],
+      low: ohlc.low[i],
+      close: ohlc.close[i],
+      volume: ohlc.volume[i] || 0,
+      dataSource: 'YahooFinance',
     }));
-  } catch (error) {
-    console.error(`[YahooFinance ERROR] ${symbol}:`, error.message);
-    return null;
+  } catch (err) {
+    console.error(`[YahooFinance ERROR] ${symbol}:`, err.response?.data || err.message);
+    return [];
   }
-}
-
+} 

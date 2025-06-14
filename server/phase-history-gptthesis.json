@@ -1,0 +1,82 @@
+{
+  "TME": {
+    "phase": "Phase 2",
+    "timestamp": 1749517860194
+  },
+  "SOL-USD": {
+    "phase": "Phase 3",
+    "timestamp": 1749518064207
+  },
+  "HES": {
+    "phase": "Phase 2",
+    "timestamp": 1749519002445
+  },
+  "APA": {
+    "phase": "Phase 2",
+    "timestamp": 1749519009990
+  },
+  "NCLH": {
+    "phase": "Phase 2",
+    "timestamp": 1749519015408
+  },
+  "HBAN": {
+    "phase": "Phase 2",
+    "timestamp": 1749519018235
+  },
+  "WBD": {
+    "phase": "Phase 2",
+    "timestamp": 1749519022300
+  },
+  "BXP": {
+    "phase": "Phase 2",
+    "timestamp": 1749519024639
+  },
+  "PL=F": {
+    "phase": "Phase 2",
+    "timestamp": 1749519028027
+  },
+  "AMCR": {
+    "phase": "Phase 3",
+    "timestamp": 1749519474308
+  },
+  "EQR": {
+    "phase": "Phase 3",
+    "timestamp": 1749519476511
+  },
+  "DIS": {
+    "phase": "Phase 2",
+    "timestamp": 1749519478502
+  },
+  "ED": {
+    "phase": "Phase 3",
+    "timestamp": 1749519480503
+  },
+  "LLY": {
+    "phase": "Phase 2",
+    "timestamp": 1749519484698
+  },
+  "BLK": {
+    "phase": "Phase 3",
+    "timestamp": 1749519486850
+  },
+  "DOGE-USD": {
+    "phase": "Phase 3",
+    "timestamp": 1749519489011
+  },
+  "SB=F": {
+    "phase": "Phase 3",
+    "timestamp": 1749519492896
+  },
+  "ETH-USD": {
+    "phase": "Phase 3",
+    "timestamp": 1749519825886
+  },
+  "VLO": {
+    "phase": "Phase 3",
+    "timestamp": 1749520033516
+  },
+  "TXN": {
+    "phase": "Phase 2",
+    "timestamp": 1749520037293
+  }
+}
