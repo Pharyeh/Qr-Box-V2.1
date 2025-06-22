@@ -92,11 +92,14 @@ export function getPhaseInfo(symbol, currentPhase) {
 export function updatePhaseInfo(symbol, phase) {
   const now = Date.now();
   if (!phaseHistory[symbol] || phaseHistory[symbol].phase !== phase) {
-    phaseHistory[symbol] = { 
-      phase, 
-      timestamp: now,
-      lastUpdate: now
-    };
+    // Append to timeline
+    if (!phaseHistory[symbol]) phaseHistory[symbol] = {};
+    if (!Array.isArray(phaseHistory[symbol].timeline)) phaseHistory[symbol].timeline = [];
+    phaseHistory[symbol].timeline.push({ phase, timestamp: now });
+    // Update current phase and timestamp
+    phaseHistory[symbol].phase = phase;
+    phaseHistory[symbol].timestamp = now;
+    phaseHistory[symbol].lastUpdate = now;
     savePhaseHistory();
     console.log(`[PhaseHistory] Updated ${symbol} → ${phase}`);
   }

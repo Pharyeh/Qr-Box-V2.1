@@ -15,6 +15,18 @@ const GRANULARITY_MAP = {
   '1M': 'M'
 };
 
+const YAHOO_INTERVAL_MAP = {
+  'M1': '1m',
+  'M5': '5m',
+  'M15': '15m',
+  'M30': '30m',
+  'H1': '60m',
+  'H4': '1d', // Yahoo does not support 4h, use daily as fallback
+  '1d': '1d',
+  '1w': '1wk',
+  '1mo': '1mo',
+};
+
 // Map TradingView/OANDA symbols to OANDA instrument names
 const OANDA_SYMBOL_MAP = {
     // FX majors
@@ -72,8 +84,9 @@ const OANDA_SYMBOL_MAP = {
 export async function getOandaCandles(symbol, granularity = 'M5', count = 100) {
   const symbolInfo = SYMBOL_MAP[symbol];
   if (!symbolInfo?.oanda) {
-    // Not supported by OANDA, use Yahoo Finance
-    return await getYahooCandles(symbol, count);
+    // Not supported by OANDA, use Yahoo Finance with mapped interval
+    const interval = YAHOO_INTERVAL_MAP[granularity] || '1d';
+    return await getYahooCandles(symbol, count, interval);
   }
 
   const OANDA_API_KEY = process.env.OANDA_API_KEY;
@@ -84,7 +97,7 @@ export async function getOandaCandles(symbol, granularity = 'M5', count = 100) {
   if (!OANDA_API_KEY || !OANDA_ACCOUNT_ID) {
     throw new Error('OANDA API credentials not set in environment variables');
   }
-  const instrument = symbolInfo.oanda || OANDA_SYMBOL_MAP[symbol] || symbol;
+  const instrument = symbolInfo.oanda || symbol;
   if (!instrument || !instrument.includes('_')) {
     console.error(`[OANDA ERROR] ${symbol}: Invalid value specified for 'instrument' (${instrument})`);
     return [];

@@ -42,7 +42,7 @@ A powerful dashboard for tracking market phases, generating trade ideas, and pro
    npm run dev
    ```
 
-3. Open your browser and navigate to `http://localhost:3000`.
+3. Open your browser and navigate to `http://localhost:5173/`.
 
 ## Features
 

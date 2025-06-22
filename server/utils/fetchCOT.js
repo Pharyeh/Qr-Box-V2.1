@@ -17,7 +17,6 @@ const prevYear = curYear - 1;
 
 const COT_YEARS = [curYear, prevYear];
 const COT_URLS = COT_YEARS.map(y => `https://www.cftc.gov/files/dea/history/fut_fin_txt_${y}.zip`);
-// Use Disaggregated COT for commodities (metals, energies, grains, softs)
 const COT_DCOT_URLS = COT_YEARS.map(y => `https://www.cftc.gov/files/dea/history/fut_disagg_txt_${y}.zip`);
 
 function parseNum(val) {
@@ -26,18 +25,31 @@ function parseNum(val) {
   return isNaN(n) ? 0 : n;
 }
 
+function getCotSentimentLabel(netNonComm) {
+  if (netNonComm >= 100000) return 'Extremely Bullish';
+  if (netNonComm >= 50000) return 'Strong Bullish';
+  if (netNonComm >= 10000) return 'Moderate Bullish';
+  if (netNonComm <= -100000) return 'Extremely Bearish';
+  if (netNonComm <= -50000) return 'Strong Bearish';
+  if (netNonComm <= -10000) return 'Moderate Bearish';
+  return 'Neutral';
+}
+
+function getCotScore(netNonComm) {
+  // Normalize COT score between -100 to +100
+  const maxRef = 200000;
+  const score = Math.max(-100, Math.min(100, Math.round((netNonComm / maxRef) * 100)));
+  return score;
+}
+
 async function fetchAndParseCOT() {
   let records = [];
   let dcotRecords = [];
 
-  // Fetch main COT data (CME, CBOT, NYMEX, COMEX)
   for (const url of COT_URLS) {
     console.log('Trying COT financial URL:', url);
     const res = await fetch(url);
-    if (!res.ok) {
-      console.warn(`Failed: ${url} (${res.status})`);
-      continue;
-    }
+    if (!res.ok) continue;
     const buffer = await res.arrayBuffer();
     const AdmZip = (await import('adm-zip')).default;
     const zip = new AdmZip(Buffer.from(buffer));
@@ -48,14 +60,10 @@ async function fetchAndParseCOT() {
     if (records.length > 0) break;
   }
 
-  // Fetch Disaggregated COT data (metals, energies, grains, softs)
   for (const url of COT_DCOT_URLS) {
     console.log('Trying DCOT URL:', url);
     const res = await fetch(url);
-    if (!res.ok) {
-      console.warn(`Failed: ${url} (${res.status})`);
-      continue;
-    }
+    if (!res.ok) continue;
     const buffer = await res.arrayBuffer();
     const AdmZip = (await import('adm-zip')).default;
     const zip = new AdmZip(Buffer.from(buffer));
@@ -66,13 +74,11 @@ async function fetchAndParseCOT() {
     if (dcotRecords.length > 0) break;
   }
 
-  // --- Find the most recent week across ALL records ---
   let allDates = [];
   records.forEach(row => allDates.push(row['Report_Date_as_YYYY-MM-DD']));
   dcotRecords.forEach(row => allDates.push(row['Report_Date_as_YYYY-MM-DD']));
   const latestDate = allDates.sort().reverse()[0];
 
-  // --- Build a lookup of COT records for that week ---
   const weekRecords = {};
   const addRows = (rows, isDCOT = false) => {
     for (const row of rows) {
@@ -80,26 +86,25 @@ async function fetchAndParseCOT() {
       const date = row['Report_Date_as_YYYY-MM-DD'];
       if (date !== latestDate) continue;
       let nonCommLong, nonCommShort, commLong, commShort, openInterest;
+
       if (isDCOT) {
-        // DCOT format: Producer/Merchant/Processor/User + Swap Dealers + Managed Money
-        nonCommLong = parseNum(row['Prod_Merc_Positions_Long_All']) + 
-                     parseNum(row['Swap_Positions_Long_All']) + 
-                     parseNum(row['M_Money_Positions_Long_All']);
-        nonCommShort = parseNum(row['Prod_Merc_Positions_Short_All']) + 
-                      parseNum(row['Swap_Positions_Short_All']) + 
-                      parseNum(row['M_Money_Positions_Short_All']);
+        nonCommLong = parseNum(row['Prod_Merc_Positions_Long_All']) + parseNum(row['Swap_Positions_Long_All']) + parseNum(row['M_Money_Positions_Long_All']);
+        nonCommShort = parseNum(row['Prod_Merc_Positions_Short_All']) + parseNum(row['Swap_Positions_Short_All']) + parseNum(row['M_Money_Positions_Short_All']);
         commLong = parseNum(row['Other_Rept_Positions_Long_All']);
         commShort = parseNum(row['Other_Rept_Positions_Short_All']);
-        openInterest = parseNum(row['Open_Interest_All']);
       } else {
-        // Financial format: Asset Manager + Leveraged Money
         nonCommLong = parseNum(row['Asset_Mgr_Positions_Long_All']) + parseNum(row['Lev_Money_Positions_Long_All']);
         nonCommShort = parseNum(row['Asset_Mgr_Positions_Short_All']) + parseNum(row['Lev_Money_Positions_Short_All']);
         commLong = parseNum(row['Comm_Positions_Long_All']);
         commShort = parseNum(row['Comm_Positions_Short_All']);
-        openInterest = parseNum(row['Open_Interest_All']);
       }
+
+      openInterest = parseNum(row['Open_Interest_All']);
       if (nonCommLong === 0 && commLong === 0) continue;
+
+      const netNonComm = nonCommLong - nonCommShort;
+      const netComm = commLong - commShort;
+
       weekRecords[code] = {
         date,
         code,
@@ -109,109 +114,77 @@ async function fetchAndParseCOT() {
         commLong,
         commShort,
         openInterest,
-        netNonComm: nonCommLong - nonCommShort,
-        netComm: commLong - commShort
+        netNonComm,
+        netComm,
+        cotSentiment: getCotSentimentLabel(netNonComm),
+        cotScore: getCotScore(netNonComm)
       };
     }
   };
+
   addRows(records, false);
   addRows(dcotRecords, true);
 
-  // Print all available contract codes for debugging
-  const allCodes = new Set();
-  records.forEach(row => allCodes.add(row['CFTC_Contract_Market_Code']));
-  dcotRecords.forEach(row => allCodes.add(row['CFTC_Contract_Market_Code']));
-  console.log('DEBUG: All contract codes found in CFTC files:', Array.from(allCodes).sort());
+  const USD_PAIRS_TO_INVERT = ['USDCAD', 'USDCHF', 'USDJPY'];
 
-  // Print first 30 records from DCOT file to see actual codes and market names
-  console.log('\n================ DCOT CODES & MARKETS (FIRST 30) ================');
-  let count = 0;
-  for (const row of dcotRecords) {
-    const code = row['CFTC_Contract_Market_Code'];
-    const name = row['Market_and_Exchange_Names'];
-    console.log(`${code} | ${name}`);
-    if (++count >= 30) break;
+  function invertCOT(cot) {
+    return {
+      ...cot,
+      nonCommLong: cot.nonCommShort,
+      nonCommShort: cot.nonCommLong,
+      commLong: cot.commShort,
+      commShort: cot.commLong,
+      netNonComm: -cot.netNonComm,
+      netComm: -cot.netComm,
+      cotSentiment: getCotSentimentLabel(-cot.netNonComm),
+      cotScore: getCotScore(-cot.netNonComm)
+    };
   }
-  console.log('================ END DCOT CODES & MARKETS ================\n');
 
-  // Build a lookup for the latest report date per code for both datasets
-  const latest = {};
-  const processRows = (rows, isDCOT = false, sourceLabel = '') => {
-    for (const row of rows) {
-      const code = row['CFTC_Contract_Market_Code'];
-      const date = row['Report_Date_as_YYYY-MM-DD'];
-      if (date !== latestDate) continue;
-      if (!latest[code] || date > latest[code].date) {
-        latest[code] = {
-          date,
-          code,
-          market: row['Market_and_Exchange_Names'],
-          source: sourceLabel,
-          ...(isDCOT ? {
-            nonCommLong: parseNum(row['Prod_Merc_Positions_Long_All']),
-            nonCommShort: parseNum(row['Prod_Merc_Positions_Short_All']),
-            commLong: parseNum(row['Other_Rept_Positions_Long_All']),
-            commShort: parseNum(row['Other_Rept_Positions_Short_All']),
-            openInterest: parseNum(row['Open_Interest_All']),
-            netNonComm: parseNum(row['Prod_Merc_Positions_Long_All']) - parseNum(row['Prod_Merc_Positions_Short_All']),
-            netComm: parseNum(row['Other_Rept_Positions_Long_All']) - parseNum(row['Other_Rept_Positions_Short_All'])
-          } : {
-            nonCommLong: parseNum(row['Asset_Mgr_Positions_Long_All']) + parseNum(row['Lev_Money_Positions_Long_All']),
-            nonCommShort: parseNum(row['Asset_Mgr_Positions_Short_All']) + parseNum(row['Lev_Money_Positions_Short_All']),
-            commLong: parseNum(row['Comm_Positions_Long_All']),
-            commShort: parseNum(row['Comm_Positions_Short_All']),
-            openInterest: parseNum(row['Open_Interest_All']),
-            netNonComm: parseNum(row['Asset_Mgr_Positions_Long_All']) + parseNum(row['Lev_Money_Positions_Long_All']) - (parseNum(row['Asset_Mgr_Positions_Short_All']) + parseNum(row['Lev_Money_Positions_Short_All'])),
-            netComm: parseNum(row['Comm_Positions_Long_All']) - parseNum(row['Comm_Positions_Short_All'])
-          })
-        };
-      }
-    }
-  };
-  processRows(records, false, 'COT');
-  processRows(dcotRecords, true, 'DCOT');
-
-  // --- Build output for all mapped codes ---
   const output = {};
   const missing = [];
+
   for (const [symbol, codeOrArr] of Object.entries(COT_MAP)) {
     if (Array.isArray(codeOrArr)) {
-      // Synthetic: e.g., EURGBP
       const [codeA, codeB] = codeOrArr;
       if (weekRecords[codeA] && weekRecords[codeB]) {
+        const netNonComm = weekRecords[codeA].netNonComm - weekRecords[codeB].netNonComm;
         output[symbol] = {
           date: latestDate,
-          netNonComm: weekRecords[codeA].netNonComm - weekRecords[codeB].netNonComm,
+          netNonComm,
           netComm: weekRecords[codeA].netComm - weekRecords[codeB].netComm,
+          cotSentiment: getCotSentimentLabel(netNonComm),
+          cotScore: getCotScore(netNonComm),
           base: weekRecords[codeA],
-          quote: weekRecords[codeB],
+          quote: weekRecords[codeB]
         };
       } else {
-        output[symbol] = {
-          market: 'N/A',
-          reason: 'Synthetic pair or cross; one or both legs missing COT data for latest week.'
-        };
         missing.push(symbol);
+        output[symbol] = { market: 'N/A', reason: 'Missing leg in synthetic pair.' };
       }
     } else if (weekRecords[codeOrArr]) {
-      output[codeOrArr] = weekRecords[codeOrArr];
+      output[symbol] = USD_PAIRS_TO_INVERT.includes(symbol)
+        ? invertCOT(weekRecords[codeOrArr])
+        : weekRecords[codeOrArr];
     } else {
-      output[codeOrArr] = {
-        market: 'N/A',
-        reason: 'No COT data for latest week.'
-      };
       missing.push(symbol);
+      output[symbol] = { market: 'N/A', reason: 'Missing COT record' };
     }
   }
 
   fs.writeFileSync(OUTPUT_FILE, JSON.stringify(output, null, 2));
-  console.log('Latest COT week:', latestDate);
-  console.log('COT data saved to', OUTPUT_FILE);
-  if (missing.length) {
-    console.warn('Missing COT data for:', missing);
-  } else {
-    console.log('COT data available for all mapped assets!');
-  }
+
+  const latest = new Date(latestDate);
+  const daysOld = Math.floor((now - latest) / (1000 * 60 * 60 * 24));
+  if (daysOld > 5) console.warn(`⚠️ Warning: Latest COT data is ${daysOld} days old (${latestDate})`);
+
+  const datedBackupPath = path.join(__dirname, `cot-${latestDate}.json`);
+  fs.writeFileSync(datedBackupPath, JSON.stringify(output, null, 2));
+
+  console.log('✅ COT data saved to:', OUTPUT_FILE);
+  console.log('📦 Snapshot saved as:', datedBackupPath);
+  if (missing.length) console.warn('⚠️ Missing symbols:', missing);
+  else console.log('🎯 All mapped symbols processed successfully.');
 }
 
 fetchAndParseCOT().catch(err => {

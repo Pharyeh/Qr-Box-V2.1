@@ -21,9 +21,14 @@ export const COT_MAP = {
   'CORNUSD': '002602',       // CORN - CHICAGO BOARD OF TRADE (DCOT)
   'WHEATUSD': '001602',      // WHEAT-SRW - CHICAGO BOARD OF TRADE (DCOT)
   'SOYBEANUSD': '005602',    // SOYBEANS - CHICAGO BOARD OF TRADE (DCOT)
-  'COCOAUSD': '007601',      // COCOA - ICE FUTURES U.S. (DCOT)
+  'COCOAUSD': '073732',      // COCOA - ICE FUTURES U.S.
+  'COFFEEUSD': '083731',     // COFFEE C - ICE FUTURES U.S.
+  'OJUICEUSD': '040601',     // ORANGE JUICE - ICE FUTURES U.S.
+  'SUGARUSD': '080732',      // SUGAR NO. 11 - ICE FUTURES U.S.
+  'PALLADIUMUSD': '075651',  // PALLADIUM - NYMEX
   'COTTONUSD': '033661',     // COTTON NO. 2 - ICE FUTURES U.S. (DCOT)
   'NATGASUSD': '023651',     // NATURAL GAS - NYMEX (DCOT)
+
 
   // Indices/Futures (CME E-mini)
   'SPX500USD': '13874+',      // E-MINI S&P 500 (CME)
@@ -40,7 +45,7 @@ export const COT_MAP = {
   'USB10YUSD': '043602',      // 10Y Treasury Note (CBOT)
   'USB30YUSD': '020601',      // 30Y Treasury Bond (CBOT)
   'USB05YUSD': '044601',      // 5Y Treasury Note (CBOT)
-
+  'USB02YUSD': '045601',      // 2Y Treasury Note (CBOT)
   // Stocks/Equities (no COT data)
   
 };

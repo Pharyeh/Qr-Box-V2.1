@@ -5,6 +5,8 @@ import { getPhaseInfo, updatePhaseInfo } from '../utils/phaseHistory.js';
 import { detectDarvasBoxes } from '../utils/darvasBox.js';
 import cotData from '../utils/cot-latest.json' assert { type: 'json' };
 
+const phaseCache = {};
+
 function calculateATR(candles, period = 14) {
   const trs = candles.slice(1).map((c, i) => {
     const prev = candles[i];
@@ -33,42 +35,79 @@ function calculateVolatilityScore(candles) {
 function calculateReflex(candles) {
   const latest = candles[candles.length - 1];
   const prev = candles[candles.length - 2];
-  return +((latest.close - prev.close) / prev.close).toFixed(3);
+  const raw = (latest.close - prev.close) / prev.close;
+  return Math.abs(raw) < 0.001 ? 0 : +raw.toFixed(3);
 }
 
-function determinePhase(isBreakout, baseLow, baseHigh, close, atr) {
+function wasCompressing(candles, threshold = 0.015) {
+  const vol = calculateVolatilityScore(candles.slice(-10));
+  return vol < threshold;
+}
+
+function determinePhase(isBreakout, baseLow, baseHigh, close, atr, reflex, structure, volatility) {
+  const phase4Threshold = baseLow - 0.3 * atr;
+  const meetsPhase3Conditions =
+    close >= baseLow + 0.5 * (baseHigh - baseLow) &&
+    reflex > 0.01 &&
+    structure > 0.18 &&
+    volatility < 0.02;
+
   if (isBreakout) return 'Phase 2';
-  if (close < baseLow - 0.0 * atr) return 'Phase 4';
-  if (close > baseLow + 0.3 * (baseHigh - baseLow)) return 'Phase 3';
+  if (close <= phase4Threshold) return 'Phase 4';
+  if (meetsPhase3Conditions) return 'Phase 3';
   return 'Phase 1';
 }
 
 function classifyBias(phase, reflex) {
-  if (phase === 'Phase 2' || phase === 'Phase 3') {
-    return reflex >= 0 ? 'Bullish' : 'Bearish';
-  } else if (phase === 'Phase 4') {
-    return reflex < 0 ? 'Bearish' : 'Bullish';
-  }
+  if (Math.abs(reflex) < 0.0015) return 'Neutral';
+  if (phase === 'Phase 2' || phase === 'Phase 3') return reflex > 0 ? 'Bullish' : 'Bearish';
+  if (phase === 'Phase 4') return reflex < 0 ? 'Bearish' : 'Bullish';
   return 'Neutral';
 }
 
-export async function scanPhaseMonitor(req, res, returnRaw = false) {
+function determinePlayType(phase, reflex, volatility, structure) {
+  if (phase === 'Phase 2') {
+    if (reflex > 0 && volatility < 0.015 && structure > 0.2) return 'Breakout';
+    if (reflex < 0 && structure > 0.25) return 'Breakdown';
+    if (structure > 0.3) return 'Expansion';
+  }
+  if (phase === 'Phase 3') return reflex < 0 ? 'Exhaustion' : 'Continuation';
+  if (phase === 'Phase 4') return reflex < 0 ? 'Reversal' : 'Deadcat Bounce';
+  return 'Unknown';
+}
+
+function formatDuration(msDiff) {
+  const minutes = Math.floor(msDiff / (1000 * 60));
+  const hours = Math.floor(msDiff / (1000 * 60 * 60));
+  const days = Math.floor(msDiff / (1000 * 60 * 60 * 24));
+  if (minutes < 60) return `${minutes}m`;
+  if (hours < 24) return `${hours}h`;
+  return `${days}d`;
+}
+
+export async function getPhaseMonitorData(timeframe = '1d') {
   const results = [];
   const now = new Date();
 
   for (const symbol of Object.keys(SYMBOL_MAP)) {
     const meta = SYMBOL_MAP[symbol];
-    const oandaData = await getOandaCandles(symbol, 'H1', 24);
+    const oandaData = await getOandaCandles(symbol, timeframe, 24);
     let candles = oandaData;
     let dataSource = 'OANDA';
+    let priceSymbol = meta.oanda || symbol;
+
     if (!oandaData || oandaData.length === 0) {
-      candles = await getYahooCandles(symbol, '1h');
+      candles = await getYahooCandles(symbol, timeframe.toLowerCase());
       dataSource = 'YahooFinance';
+      priceSymbol = SYMBOL_MAP[symbol]?.yahoo || symbol;
     } else if (oandaData[0]?.dataSource) {
       dataSource = oandaData[0].dataSource;
+      priceSymbol = meta.oanda || symbol;
     }
 
-    if (!candles || candles.length < 20) continue;
+    if (!candles || candles.length < 20) {
+      continue;
+    }
 
     const baseCandles = candles.slice(-21, -1);
     const recent = candles[candles.length - 1];
@@ -82,67 +121,116 @@ export async function scanPhaseMonitor(req, res, returnRaw = false) {
 
     const darvasBoxes = detectDarvasBoxes(candles, { symbol, assetClass: meta.assetClass });
     const lastBox = darvasBoxes?.[0];
-    const isBreakout = lastBox?.isFreshBreakout && lastBox?.direction === 1;
+    const compressed = wasCompressing(baseCandles);
 
-    const phase = determinePhase(isBreakout, baseLow, baseHigh, recent.close, atr);
-    const bias = classifyBias(phase, reflex);
-
-    const previous = getPhaseInfo(symbol);
-    const lastPhase = previous?.phase;
-    const lastTimestamp = new Date(previous?.timestamp || 0);
-    const durationHours = Math.floor((now - lastTimestamp) / (1000 * 60 * 60));
-    const isNew = phase === 'Phase 2' && lastPhase !== 'Phase 2';
-
-    // COT
-    const cotKey = meta.cotKey;
-    const cotEntry = cotData[cotKey];
-    let cotBias = ' Neutral';
-    let cotScore = 0;
-    if (cotEntry && cotEntry.netNonComm !== undefined && cotEntry.openInterest) {
-      cotScore = cotEntry.netNonComm / cotEntry.openInterest;
-    } else if (cotEntry?.netNonComm !== undefined) {
-      cotScore = cotEntry.netNonComm / 1_000_000;
+    let isBreakout = false;
+    if (lastBox?.isFreshBreakout && lastBox.direction === 1 && compressed) {
+      isBreakout = true;
+    } else if (reflex > 0.008 && structure > 0.08) {
+      isBreakout = true;
+    } else if (meta.assetClass === 'Stocks' && reflex > 0.02 && structure > 0.12) {
+      isBreakout = true;
+    } else if (meta.assetClass === 'Forex' && compressed && reflex > 0.006 && structure > 0.08) {
+      isBreakout = true;
     }
-    if (cotScore >= 0.5) cotBias = ' Strong Bullish';
-    else if (cotScore > 0.1) cotBias = ' Bullish';
-    else if (cotScore < -0.5) cotBias = ' Strong Bearish';
-    else if (cotScore < -0.1) cotBias = ' Bearish';
-    else if (!cotEntry) cotBias = 'No COT';
 
-    // Entry, Stop, Target
-    const currentPrice = recent.close;
-    const entry = phase === 'Phase 2' && lastBox?.top ? lastBox.top : currentPrice;
-    const stop = (entry - atr).toFixed(5);
-    const tp1 = (entry + atr).toFixed(5);
-    const tp2 = (entry + 2 * atr).toFixed(5);
-
-    const levels = {
-      entry: entry ? entry.toString() : 'N/A',
-      stop: stop ? stop.toString() : 'N/A',
-      tp1,
-      tp2
+    let phase = determinePhase(isBreakout, baseLow, baseHigh, recent.close, atr, reflex, structure, volatility);
+    let sticky = false;
+    const lastScan = phaseCache[symbol] || {};
+    if (lastScan.phase === 'Phase 3' && phase === 'Phase 1') {
+      const elapsedMs = now - (lastScan.timestamp || now);
+      if (elapsedMs < 2 * 60 * 60 * 1000) {
+        phase = 'Phase 3';
+        sticky = true;
+      }
+    }
+    if (lastScan.phase === 'Phase 2' && phase === 'Phase 1') {
+      const elapsedMs = now - (lastScan.timestamp || now);
+      if (elapsedMs < 30 * 60 * 1000) {
+        phase = 'Phase 2';
+        sticky = true;
+      }
+    }
+    phaseCache[symbol] = {
+      phase,
+      timestamp: now,
+      bias: classifyBias(phase, reflex),
     };
 
+    const bias = classifyBias(phase, reflex);
+
+    const entry = lastBox?.top || recent.close;
+    let stop = 'N/A', tp1 = 'N/A', tp2 = 'N/A', rr = 0;
+    if (!isNaN(entry)) {
+      const sl = bias === 'Bearish' ? entry + atr : entry - atr;
+      const take1 = bias === 'Bearish' ? entry - atr : entry + atr;
+      const take2 = bias === 'Bearish' ? entry - 2 * atr : entry + 2 * atr;
+      stop = sl.toFixed(5);
+      tp1 = take1.toFixed(5);
+      tp2 = take2.toFixed(5);
+      rr = Math.abs((take1 - entry) / (entry - sl));
+    }
+    const msDiff = now - (lastScan.timestamp || now);
+    const freshnessScore = msDiff <= 3 * 60 * 60 * 1000 ? 10 : msDiff <= 6 * 60 * 60 * 1000 ? 5 : 0;
+    const playType = determinePlayType(phase, reflex, volatility, structure);
+
+    // --- COT LOGIC ---
+    const cotKey = meta.cotKey;
+    const cotEntry = cotData[cotKey];
+    let cotBias = cotEntry?.cotSentiment || 'Neutral';
+    let cotScore = typeof cotEntry?.cotScore === 'number' ? cotEntry.cotScore : 0;
+    if (meta.invertCot) {
+      cotScore = -cotScore;
+      if (cotBias === 'Bullish') cotBias = 'Bearish';
+      else if (cotBias === 'Bearish') cotBias = 'Bullish';
+      else if (cotBias === 'Strong Bullish') cotBias = 'Strong Bearish';
+      else if (cotBias === 'Strong Bearish') cotBias = 'Strong Bullish';
+    }
+
+    // --- PHASE HISTORY PERSISTENCE ---
+    if (lastScan.phase !== phase) {
+      updatePhaseInfo(symbol, phase);
+    }
+    const phaseInfo = getPhaseInfo(symbol, phase);
+    const durationInPhase = phaseInfo.durationInPhase;
+    const isNew = phaseInfo.isNew;
+
+    const lastPhase = lastScan.phase || phase;
     const result = {
       symbol,
       phase,
+      lastPhase,
       bias,
       reflex,
       volatility,
       structure,
-      isNew,
-      durationInPhase: `${durationHours}h`,
-      source: dataSource,
+      sticky,
       cotBias,
       cotScore: +cotScore.toFixed(2),
+      freshnessScore,
+      durationInPhase: typeof durationInPhase === 'number' ? `${durationInPhase}h` : formatDuration(msDiff),
+      isNew,
+      source: dataSource,
+      priceSource: dataSource,
+      priceSymbol,
       assetClass: meta.assetClass || 'Unclassified',
-      levels,
+      levels: {
+        entry: entry.toString(),
+        stop,
+        tp1,
+        tp2,
+        rr: +rr.toFixed(2)
+      },
+      playType,
     };
-
-    updatePhaseInfo(symbol, phase);
+    result.lastPhase = result.lastPhase || result.phase;
     results.push(result);
   }
+  return results;
+}
 
+export async function scanPhaseMonitor(req, res, returnRaw = false, timeframe = '1d') {
+  const results = await getPhaseMonitorData(timeframe);
   if (returnRaw) return results;
   res.json(results);
 }

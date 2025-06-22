@@ -1,8 +1,8 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
+import { fetchTradeIdeas as fetchTradeIdeasAPI } from '../api/tradeIdeas';
 
 const SymbolContext = createContext();
 
-// Helper to normalize assetClass for consistent filtering
 function normalizeClass(cls) {
   if (!cls) return 'Default';
   const clean = cls.trim().toLowerCase();
@@ -17,52 +17,85 @@ function normalizeClass(cls) {
 
 export function SymbolProvider({ children }) {
   const [symbolsData, setSymbolsData] = useState([]);
-  const [tradeIdeas, setTradeIdeas] = useState([]);
   const [selectedSymbol, setSelectedSymbol] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const hasSetDefault = useRef(false);
+
+  // Trade Ideas State
+  const [tradeIdeas, setTradeIdeas] = useState([]);
+  const [loadingTradeIdeas, setLoadingTradeIdeas] = useState(true);
+  const [errorTradeIdeas, setErrorTradeIdeas] = useState(null);
+
+  // Timeframe State (default to 1d)
+  const [timeframe, setTimeframe] = useState('1d');
+
+  // Expose fetchSymbols for manual/auto refresh
+  const fetchSymbols = async (opts = {}) => {
+    const { silent = false } = opts;
+    try {
+      if (!silent) setLoading(true);
+      setError(null);
+      const res = await fetch(`/api/phasemonitor?refresh=true&timeframe=${timeframe}`);
+      if (!res.ok) throw new Error(`Failed to fetch assets: ${res.status} ${res.statusText}`);
+      const json = await res.json();
+      setSymbolsData(json);
+    } catch (err) {
+      setSymbolsData([]);
+      setError(err.message || 'Failed to load data');
+    } finally {
+      if (!silent) setLoading(false);
+    }
+  };
+
+  // Fetch Trade Ideas
+  const fetchTradeIdeas = async (opts = {}) => {
+    const { silent = false } = opts;
+    try {
+      if (!silent) setLoadingTradeIdeas(true);
+      setErrorTradeIdeas(null);
+      const json = await fetchTradeIdeasAPI();
+      setTradeIdeas(Array.isArray(json) ? json : []);
+    } catch (err) {
+      setTradeIdeas([]);
+      setErrorTradeIdeas(err.message || 'Failed to load trade ideas');
+    } finally {
+      if (!silent) setLoadingTradeIdeas(false);
+    }
+  };
 
   useEffect(() => {
-    let isInitial = true;
-    async function fetchData() {
-      if (isInitial) setLoading(true);
-      try {
-        setError(null);
-        const [symbolsRes, ideasRes] = await Promise.all([
-          fetch('/api/phasemonitor'),
-          fetch('/api/tradeideas'),
-        ]);
-        if (!symbolsRes.ok) throw new Error(`Failed to fetch assets: ${symbolsRes.status} ${symbolsRes.statusText}`);
-        if (!ideasRes.ok) throw new Error(`Failed to fetch trade ideas: ${ideasRes.status} ${ideasRes.statusText}`);
-        const symbolsJson = await symbolsRes.json();
-        const ideasJson = await ideasRes.json();
-        setSymbolsData(symbolsJson);
-        setTradeIdeas(ideasJson);
-      } catch (err) {
-        setSymbolsData([]);
-        setTradeIdeas([]);
-        setError(err.message || 'Failed to load data');
-      }
-      if (isInitial) setLoading(false);
-      isInitial = false;
-    }
-    fetchData();
-    const interval = setInterval(fetchData, 30000);
+    fetchSymbols();
+    const interval = setInterval(() => fetchSymbols({ silent: true }), 60000); // silent background refresh
     return () => clearInterval(interval);
-  }, []);
+  }, [timeframe]);
 
-  // Normalize assetClass for consistent filtering
-  const normalizedSymbolsData = symbolsData ? symbolsData.map(row => ({ ...row, assetClass: normalizeClass(row.assetClass) })) : [];
-  const normalizedTradeIdeas = tradeIdeas ? tradeIdeas.map(row => ({ ...row, assetClass: normalizeClass(row.assetClass) })) : [];
+  useEffect(() => {
+    fetchTradeIdeas();
+    const interval = setInterval(() => fetchTradeIdeas({ silent: true }), 60000); // silent background refresh
+    return () => clearInterval(interval);
+  }, [timeframe]);
+
+  const normalizedSymbolsData = symbolsData.map(row => ({
+    ...row,
+    assetClass: normalizeClass(row.assetClass)
+  }));
 
   return (
     <SymbolContext.Provider value={{
       symbolsData: normalizedSymbolsData,
-      tradeIdeas: normalizedTradeIdeas,
+      setSymbolsData,
       selectedSymbol,
       setSelectedSymbol,
       loading,
-      error
+      error,
+      fetchSymbols, // expose for manual refresh
+      tradeIdeas,
+      loadingTradeIdeas,
+      errorTradeIdeas,
+      fetchTradeIdeas, // expose for manual refresh
+      timeframe,
+      setTimeframe
     }}>
       {children}
     </SymbolContext.Provider>
@@ -71,4 +104,4 @@ export function SymbolProvider({ children }) {
 
 export function useSymbolContext() {
   return useContext(SymbolContext);
-} 
+}

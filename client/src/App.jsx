@@ -3,7 +3,10 @@ import React, { useState } from 'react';
 import PhaseMonitorPanel from './panels/phasemonitor/PhaseMonitorPanel.jsx';
 import TradeIdeasPanel from './panels/tradeideas/TradeIdeasPanel.jsx';
 import GPTThesisPanel from './panels/gptthesis/GPTThesisPanel.jsx';
+import RangeBreakoutPanel from './panels/rangebreakout/RangeBreakoutPanel.jsx';
 import ErrorBoundary from './components/ErrorBoundary';
+import { PanelGroup, Panel, PanelResizeHandle } from 'react-resizable-panels';
+import "./index.css";
 
 function handleToggleFullscreen() {
   const elem = document.documentElement;
@@ -42,16 +45,32 @@ export default function App() {
             </svg>
           </button>
         </header>
-        <main className="flex-1 w-full grid grid-cols-1 md:grid-cols-4 gap-4">
-          <section className="rounded-2xl shadow-xl bg-slate-800/80 border border-slate-700 p-4 overflow-y-auto col-span-2">
-            <PhaseMonitorPanel onSelect={setSelectedSymbol} selectedSymbol={selectedSymbol} />
-          </section>
-          <section className="rounded-2xl shadow-xl bg-slate-800/80 border border-slate-700 p-4 overflow-y-auto">
-            <TradeIdeasPanel onSelect={setSelectedSymbol} selectedSymbol={selectedSymbol} />
-          </section>
-          <section className="rounded-2xl shadow-xl bg-slate-800/80 border border-slate-700 p-4 overflow-y-auto h-full min-h-0 flex flex-col">
-            <GPTThesisPanel selectedSymbol={selectedSymbol && selectedSymbol.symbol ? selectedSymbol.symbol : selectedSymbol} />
-          </section>
+        <main className="flex-1 w-full">
+          <PanelGroup direction="horizontal" className="h-full gap-4">
+            <Panel minSize={15} defaultSize={46} className="flex flex-col">
+              <section className="rounded-2xl shadow-xl bg-slate-800/80 border border-slate-700 p-4 overflow-y-auto h-full">
+                <PhaseMonitorPanel onSelect={setSelectedSymbol} selectedSymbol={selectedSymbol} />
+              </section>
+            </Panel>
+            <PanelResizeHandle className="w-2 cursor-col-resize bg-slate-900/60 hover:bg-sky-700/60 transition-colors" />
+            <Panel minSize={10} defaultSize={14} className="flex flex-col">
+              <section className="rounded-2xl shadow-xl bg-slate-800/80 border border-slate-700 p-4 overflow-y-auto h-full">
+                <TradeIdeasPanel onSelect={setSelectedSymbol} selectedSymbol={selectedSymbol} />
+              </section>
+            </Panel>
+            <PanelResizeHandle className="w-2 cursor-col-resize bg-slate-900/60 hover:bg-sky-700/60 transition-colors" />
+            <Panel minSize={15} defaultSize={20} className="flex flex-col">
+              <section className="rounded-2xl shadow-xl bg-slate-800/80 border border-slate-700 p-4 overflow-y-auto h-full min-h-0 flex flex-col">
+                <GPTThesisPanel selectedSymbol={selectedSymbol && selectedSymbol.symbol ? selectedSymbol.symbol : selectedSymbol} />
+              </section>
+            </Panel>
+            <PanelResizeHandle className="w-2 cursor-col-resize bg-slate-900/60 hover:bg-sky-700/60 transition-colors" />
+            <Panel minSize={10} defaultSize={20} className="flex flex-col">
+              <section className="rounded-2xl shadow-xl bg-slate-800/80 border border-slate-700 p-4 overflow-y-auto h-full min-h-0 flex flex-col">
+                <RangeBreakoutPanel />
+              </section>
+            </Panel>
+          </PanelGroup>
         </main>
       </div>
     </ErrorBoundary>

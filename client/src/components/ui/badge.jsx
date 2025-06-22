@@ -1,35 +1,54 @@
 import React from 'react';
-import { FaArrowUp, FaArrowDown, FaPause, FaBalanceScale } from 'react-icons/fa';
 
-/**
- * Badge component for displaying Bias or COT with color coding and optional score.
- * @param {string} label - The text label (e.g., 'Bullish', 'Bearish', etc.)
- * @param {number} [score] - Optional score to display (for COT)
- * @param {string} [type] - 'bias' | 'cot' (for future extension, currently same style)
- * @param {string} [className] - Additional classes
- */
-export default function Badge({ label, score, type = 'cot', className = '' }) {
-  let colorClass = '';
-  let icon = null;
-  if (label?.includes('Strong Bullish')) { colorClass = 'bg-blue-900 text-blue-200 border border-blue-400'; icon = <FaArrowUp className="inline mr-1 text-blue-300 animate-bounce" />; }
-  else if (label?.includes('Bullish')) { colorClass = 'bg-green-900 text-green-200 border border-green-400'; icon = <FaArrowUp className="inline mr-1 text-green-300 animate-bounce" />; }
-  else if (label?.includes('Strong Bearish')) { colorClass = 'bg-red-900 text-red-200 border border-red-400'; icon = <FaArrowDown className="inline mr-1 text-red-300 animate-bounce" />; }
-  else if (label?.includes('Bearish')) { colorClass = 'bg-orange-900 text-orange-200 border border-orange-400'; icon = <FaArrowDown className="inline mr-1 text-orange-300 animate-bounce" />; }
-  else if (label?.includes('Neutral')) { colorClass = 'bg-yellow-900 text-yellow-200 border border-yellow-400'; icon = <FaPause className="inline mr-1 text-yellow-300" />; }
-  else if (label?.includes('No COT') || label?.includes('No Data')) { colorClass = 'bg-gray-800 text-gray-400 border border-gray-600'; icon = <FaBalanceScale className="inline mr-1 text-gray-400" />; }
-  else { colorClass = 'bg-yellow-900 text-yellow-300 border border-yellow-700'; icon = <FaPause className="inline mr-1 text-yellow-300" />; }
+const COLOR_MAP = {
+  bias: {
+    Bullish: 'bg-green-800 text-green-100',
+    Bearish: 'bg-red-800 text-red-100',
+    Neutral: 'bg-yellow-600 text-yellow-100'
+  },
+  cot: {
+    'Strong Bullish': 'bg-green-700 text-white border border-green-500',
+    Bullish: 'bg-green-800 text-green-100',
+    'Extremely Bullish': 'bg-green-900 text-green-100',
+    'Extreme Bullish': 'bg-green-900 text-green-100',
+    Neutral: 'bg-gray-700 text-gray-300',
+    Bearish: 'bg-yellow-700 text-yellow-100',
+    'Strong Bearish': 'bg-red-700 text-white border border-red-500',
+    'Extremely Bearish': 'bg-red-900 text-red-100',
+    'Extreme Bearish': 'bg-red-900 text-red-100',
+    'No COT': 'bg-zinc-700 text-zinc-300'
+  },
+  phase: {
+    'Phase 1': 'bg-gray-700 text-gray-200',
+    'Phase 2': 'bg-green-800 text-green-100',
+    'Phase 3': 'bg-amber-700 text-amber-100',
+    'Phase 4': 'bg-red-800 text-red-100'
+  }
+};
+
+const STATUS_HINT = {
+  '✅ Aligned': 'Institutional bias confirms the current market direction.',
+  '⚠️ Divergence': 'COT and price bias are in conflict — caution advised.',
+  '❓ Unknown': 'No strong alignment signal.'
+};
+
+const Badge = ({ label, type = 'default', score, status, glow }) => {
+  const colorClass = COLOR_MAP[type]?.[label] || 'bg-zinc-600 text-white';
+  const shadow = glow ? 'shadow-lg shadow-green-400/30 animate-pulse' : '';
+  const tooltipText = status ? STATUS_HINT[status] : '';
 
   return (
-    <span
-      className={`px-2 py-0.5 rounded-full text-xs font-semibold transition-all duration-200 shadow-sm hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400/70 inline-flex items-center gap-1 ${colorClass} ${className}`}
-      title={score !== undefined ? `${label} (${score >= 0 ? '+' : ''}${score.toFixed(2)})` : label}
-      tabIndex={0}
+    <div
+      className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold whitespace-nowrap ${colorClass} ${shadow}`}
+      title={tooltipText}
     >
-     {icon}
       {label}
       {score !== undefined && (
-        <span className="font-mono text-xs ml-1">({score >= 0 ? '+' : ''}{score.toFixed(2)})</span>
+        <span className="ml-1 text-gray-400">({score >= 0 ? '+' : ''}{score.toFixed(2)})</span>
       )}
-    </span>
+      {status && <span className="ml-2 text-xs">{status}</span>}
+    </div>
   );
-} 
+};
+
+export default Badge;

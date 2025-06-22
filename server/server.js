@@ -16,6 +16,7 @@ import cors from 'cors';
 import phaseMonitorRoute from './routes/api/phasemonitor.js';
 import tradeIdeasRoute from './routes/api/tradeideas.js';
 import gptThesisRoute from './routes/api/gptthesis.js';
+import rangeBreakoutRoute from './routes/api/rangebreakout.js';
 import { loadPhaseHistory } from './utils/phaseHistory.js';
 
 const app = express();
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use('/api/phasemonitor', phaseMonitorRoute);
 app.use('/api/tradeideas', tradeIdeasRoute);
 app.use('/api/gptthesis', gptThesisRoute);
+app.use('/api/rangebreakout', rangeBreakoutRoute);
 
 // Base endpoint
 app.get('/', (req, res) => {

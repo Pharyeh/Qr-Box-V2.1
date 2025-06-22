@@ -448,9 +448,8 @@
     "timestamp": 1749517733905
   },
   "VALE": {
-    "phase": "Phase 3",
-    "timestamp": 1749940422750,
-    "lastUpdate": 1749940422750
+    "phase": "Phase 4",
+    "timestamp": 1749877235542
   },
   "EURUSD=X": {
     "phase": "Phase 3",
@@ -713,9 +712,8 @@
     "timestamp": 1749882620163
   },
   "COPPERUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421237,
-    "lastUpdate": 1749940421237
+    "phase": "Phase 1",
+    "timestamp": 1749877232850
   },
   "PLATINUMUSD_W": {
     "phase": "Phase 1",
@@ -726,9 +724,8 @@
     "timestamp": 1749882620379
   },
   "PLATINUMUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421287,
-    "lastUpdate": 1749940421287
+    "phase": "Phase 1",
+    "timestamp": 1749877232970
   },
   "PALLADIUMUSD_W": {
     "phase": "Phase 1",
@@ -739,9 +736,8 @@
     "timestamp": 1749882620590
   },
   "PALLADIUMUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421342,
-    "lastUpdate": 1749940421342
+    "phase": "Phase 1",
+    "timestamp": 1749877233133
   },
   "SOYBEANUSD_W": {
     "phase": "Phase 1",
@@ -752,9 +748,15 @@
     "timestamp": 1749882621232
   },
   "SOYBEANUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421525,
-    "lastUpdate": 1749940421525
+    "phase": "Phase 2",
+    "timestamp": 1750572347689,
+    "timeline": [
+      {
+        "phase": "Phase 2",
+        "timestamp": 1750572347689
+      }
+    ],
+    "lastUpdate": 1750572347689
   },
   "COFFEEUSD_W": {
     "phase": "Phase 4",
@@ -765,8 +767,15 @@
     "timestamp": 1749882621383
   },
   "COFFEEUSD": {
-    "phase": "Phase 4",
-    "timestamp": 1749877233499
+    "phase": "Phase 1",
+    "timestamp": 1750572347792,
+    "timeline": [
+      {
+        "phase": "Phase 1",
+        "timestamp": 1750572347792
+      }
+    ],
+    "lastUpdate": 1750572347792
   },
   "COCOAUSD_W": {
     "phase": "Phase 1",
@@ -777,9 +786,8 @@
     "timestamp": 1749882621506
   },
   "COCOAUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421636,
-    "lastUpdate": 1749940421636
+    "phase": "Phase 1",
+    "timestamp": 1749877233673
   },
   "SUGARUSD_W": {
     "phase": "Phase 1",
@@ -790,9 +798,8 @@
     "timestamp": 1749882621650
   },
   "SUGARUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421686,
-    "lastUpdate": 1749940421686
+    "phase": "Phase 1",
+    "timestamp": 1749877233795
   },
   "COTTONUSD_W": {
     "phase": "Phase 4",
@@ -803,9 +810,15 @@
     "timestamp": 1749882621726
   },
   "COTTONUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421738,
-    "lastUpdate": 1749940421738
+    "phase": "Phase 1",
+    "timestamp": 1750572348103,
+    "timeline": [
+      {
+        "phase": "Phase 1",
+        "timestamp": 1750572348103
+      }
+    ],
+    "lastUpdate": 1750572348103
   },
   "OJUICEUSD_W": {
     "phase": "Phase 4",
@@ -816,9 +829,15 @@
     "timestamp": 1749882621881
   },
   "OJUICEUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421797,
-    "lastUpdate": 1749940421797
+    "phase": "Phase 1",
+    "timestamp": 1750572348202,
+    "timeline": [
+      {
+        "phase": "Phase 1",
+        "timestamp": 1750572348202
+      }
+    ],
+    "lastUpdate": 1750572348202
   },
   "XRPUSD_W": {
     "phase": "Phase 1",
@@ -841,9 +860,8 @@
     "timestamp": 1749882623710
   },
   "ADT": {
-    "phase": "Phase 3",
-    "timestamp": 1749940422238,
-    "lastUpdate": 1749940422238
+    "phase": "Phase 4",
+    "timestamp": 1749877234471
   },
   "SAN_W": {
     "phase": "Phase 4",
@@ -854,9 +872,8 @@
     "timestamp": 1749882623909
   },
   "SAN": {
-    "phase": "Phase 3",
-    "timestamp": 1749940422344,
-    "lastUpdate": 1749940422344
+    "phase": "Phase 4",
+    "timestamp": 1749877234705
   },
   "COMP_W": {
     "phase": "Phase 1",
@@ -867,9 +884,8 @@
     "timestamp": 1749882624016
   },
   "COMP": {
-    "phase": "Phase 3",
-    "timestamp": 1749940422455,
-    "lastUpdate": 1749940422455
+    "phase": "Phase 1",
+    "timestamp": 1749877234818
   },
   "HL_W": {
     "phase": "Phase 1",
@@ -880,9 +896,8 @@
     "timestamp": 1749882624193
   },
   "HL": {
-    "phase": "Phase 3",
-    "timestamp": 1749940422555,
-    "lastUpdate": 1749940422555
+    "phase": "Phase 1",
+    "timestamp": 1749877235187
   },
   "STLA_W": {
     "phase": "Phase 3",
@@ -913,9 +928,8 @@
     "timestamp": 1749882624700
   },
   "NU": {
-    "phase": "Phase 3",
-    "timestamp": 1749940422806,
-    "lastUpdate": 1749940422806
+    "phase": "Phase 4",
+    "timestamp": 1749877235698
   },
   "TDOC_W": {
     "phase": "Phase 1",
@@ -926,9 +940,8 @@
     "timestamp": 1749882624782
   },
   "TDOC": {
-    "phase": "Phase 3",
-    "timestamp": 1749940422866,
-    "lastUpdate": 1749940422866
+    "phase": "Phase 1",
+    "timestamp": 1749877235855
   },
   "USEG_W": {
     "phase": "Phase 4",
@@ -939,9 +952,8 @@
     "timestamp": 1749882624943
   },
   "USEG": {
-    "phase": "Phase 3",
-    "timestamp": 1749940422981,
-    "lastUpdate": 1749940422981
+    "phase": "Phase 4",
+    "timestamp": 1749877235978
   },
   "ICON_W": {
     "phase": "Phase 1",
@@ -976,9 +988,8 @@
     "timestamp": 1749882625419
   },
   "SBET": {
-    "phase": "Phase 3",
-    "timestamp": 1749940423203,
-    "lastUpdate": 1749940423203
+    "phase": "Phase 1",
+    "timestamp": 1749877236436
   },
   "OKLO_W": {
     "phase": "Phase 1",
@@ -1001,9 +1012,8 @@
     "timestamp": 1749882625673
   },
   "LTBR": {
-    "phase": "Phase 3",
-    "timestamp": 1749940423338,
-    "lastUpdate": 1749940423338
+    "phase": "Phase 1",
+    "timestamp": 1749877236650
   },
   "UEC_W": {
     "phase": "Phase 4",
@@ -1014,9 +1024,8 @@
     "timestamp": 1749882625795
   },
   "UEC": {
-    "phase": "Phase 3",
-    "timestamp": 1749940423391,
-    "lastUpdate": 1749940423391
+    "phase": "Phase 4",
+    "timestamp": 1749877236758
   },
   "F_W": {
     "phase": "Phase 1",
@@ -1035,9 +1044,8 @@
     "timestamp": 1749882626222
   },
   "RIVN": {
-    "phase": "Phase 3",
-    "timestamp": 1749940423618,
-    "lastUpdate": 1749940423618
+    "phase": "Phase 1",
+    "timestamp": 1749877237165
   },
   "SIGA_W": {
     "phase": "Phase 1",
@@ -1072,9 +1080,8 @@
     "timestamp": 1749882626610
   },
   "BLDE": {
-    "phase": "Phase 3",
-    "timestamp": 1749940423933,
-    "lastUpdate": 1749940423933
+    "phase": "Phase 1",
+    "timestamp": 1749877237632
   },
   "BZUN_W": {
     "phase": "Phase 1",
@@ -1085,9 +1092,8 @@
     "timestamp": 1749882626797
   },
   "BZUN": {
-    "phase": "Phase 3",
-    "timestamp": 1749940424062,
-    "lastUpdate": 1749940424062
+    "phase": "Phase 1",
+    "timestamp": 1749877237795
   },
   "PLBY_W": {
     "phase": "Phase 1",
@@ -1098,9 +1104,8 @@
     "timestamp": 1749882626837
   },
   "PLBY": {
-    "phase": "Phase 3",
-    "timestamp": 1749940424124,
-    "lastUpdate": 1749940424124
+    "phase": "Phase 1",
+    "timestamp": 1749877237904
   },
   "PRCH_W": {
     "phase": "Phase 1",
@@ -1111,9 +1116,8 @@
     "timestamp": 1749882626946
   },
   "PRCH": {
-    "phase": "Phase 3",
-    "timestamp": 1749940424176,
-    "lastUpdate": 1749940424176
+    "phase": "Phase 1",
+    "timestamp": 1749877238135
   },
   "EURUSD_W": {
     "phase": "Phase 1",
@@ -1124,9 +1128,8 @@
     "timestamp": 1749882615544
   },
   "EURUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940419892,
-    "lastUpdate": 1749940419892
+    "phase": "Phase 1",
+    "timestamp": 1749877632456
   },
   "GBPUSD_W": {
     "phase": "Phase 1",
@@ -1137,9 +1140,8 @@
     "timestamp": 1749882615778
   },
   "GBPUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940419970,
-    "lastUpdate": 1749940419970
+    "phase": "Phase 1",
+    "timestamp": 1749877632696
   },
   "USDJPY_W": {
     "phase": "Phase 1",
@@ -1150,9 +1152,8 @@
     "timestamp": 1749882615996
   },
   "USDJPY": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420038,
-    "lastUpdate": 1749940420038
+    "phase": "Phase 1",
+    "timestamp": 1749877632919
   },
   "AUDUSD_W": {
     "phase": "Phase 1",
@@ -1163,9 +1164,8 @@
     "timestamp": 1749882616202
   },
   "AUDUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420092,
-    "lastUpdate": 1749940420092
+    "phase": "Phase 1",
+    "timestamp": 1749877633149
   },
   "NZDUSD_W": {
     "phase": "Phase 1",
@@ -1176,9 +1176,8 @@
     "timestamp": 1749882616406
   },
   "NZDUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420165,
-    "lastUpdate": 1749940420165
+    "phase": "Phase 1",
+    "timestamp": 1749877633428
   },
   "USDCAD_W": {
     "phase": "Phase 1",
@@ -1201,9 +1200,8 @@
     "timestamp": 1749882616820
   },
   "USDCHF": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420284,
-    "lastUpdate": 1749940420284
+    "phase": "Phase 1",
+    "timestamp": 1749877633859
   },
   "EURGBP_W": {
     "phase": "Phase 1",
@@ -1214,9 +1212,8 @@
     "timestamp": 1749882617064
   },
   "EURGBP": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420354,
-    "lastUpdate": 1749940420354
+    "phase": "Phase 1",
+    "timestamp": 1749877634090
   },
   "EURJPY_W": {
     "phase": "Phase 1",
@@ -1227,9 +1224,8 @@
     "timestamp": 1749882617280
   },
   "EURJPY": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420407,
-    "lastUpdate": 1749940420407
+    "phase": "Phase 1",
+    "timestamp": 1749877634336
   },
   "GBPJPY_W": {
     "phase": "Phase 1",
@@ -1240,9 +1236,8 @@
     "timestamp": 1749882617478
   },
   "GBPJPY": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420478,
-    "lastUpdate": 1749940420478
+    "phase": "Phase 1",
+    "timestamp": 1749877634559
   },
   "CHFJPY_W": {
     "phase": "Phase 1",
@@ -1253,9 +1248,8 @@
     "timestamp": 1749882617721
   },
   "CHFJPY": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420542,
-    "lastUpdate": 1749940420542
+    "phase": "Phase 1",
+    "timestamp": 1749877634780
   },
   "XAUUSD_W": {
     "phase": "Phase 1",
@@ -1266,9 +1260,8 @@
     "timestamp": 1749882617955
   },
   "XAUUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420591,
-    "lastUpdate": 1749940420591
+    "phase": "Phase 1",
+    "timestamp": 1749877635006
   },
   "XAGUSD_W": {
     "phase": "Phase 4",
@@ -1279,9 +1272,8 @@
     "timestamp": 1749882618210
   },
   "XAGUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420659,
-    "lastUpdate": 1749940420659
+    "phase": "Phase 1",
+    "timestamp": 1749877635198
   },
   "WTICOUSD_W": {
     "phase": "Phase 4",
@@ -1292,8 +1284,15 @@
     "timestamp": 1749882618460
   },
   "WTICOUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749877635419
+    "phase": "Phase 1",
+    "timestamp": 1750572346736,
+    "timeline": [
+      {
+        "phase": "Phase 1",
+        "timestamp": 1750572346736
+      }
+    ],
+    "lastUpdate": 1750572346736
   },
   "NATGASUSD_W": {
     "phase": "Phase 4",
@@ -1304,9 +1303,8 @@
     "timestamp": 1749882618664
   },
   "NATGASUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420781,
-    "lastUpdate": 1749940420781
+    "phase": "Phase 1",
+    "timestamp": 1749877635638
   },
   "SPX500USD_W": {
     "phase": "Phase 4",
@@ -1317,9 +1315,8 @@
     "timestamp": 1749882618912
   },
   "SPX500USD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420847,
-    "lastUpdate": 1749940420847
+    "phase": "Phase 1",
+    "timestamp": 1749877635870
   },
   "NAS100USD_W": {
     "phase": "Phase 4",
@@ -1330,9 +1327,8 @@
     "timestamp": 1749882619197
   },
   "NAS100USD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940420899,
-    "lastUpdate": 1749940420899
+    "phase": "Phase 1",
+    "timestamp": 1749877636140
   },
   "US30USD_W": {
     "phase": "Phase 1",
@@ -1343,8 +1339,15 @@
     "timestamp": 1749882619478
   },
   "US30USD": {
-    "phase": "Phase 1",
-    "timestamp": 1749877636338
+    "phase": "Phase 2",
+    "timestamp": 1750572346924,
+    "timeline": [
+      {
+        "phase": "Phase 2",
+        "timestamp": 1750572346924
+      }
+    ],
+    "lastUpdate": 1750572346924
   },
   "US2000USD_W": {
     "phase": "Phase 1",
@@ -1355,9 +1358,15 @@
     "timestamp": 1749882619715
   },
   "US2000USD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421020,
-    "lastUpdate": 1749940421020
+    "phase": "Phase 2",
+    "timestamp": 1750572346977,
+    "timeline": [
+      {
+        "phase": "Phase 2",
+        "timestamp": 1750572346977
+      }
+    ],
+    "lastUpdate": 1750572346977
   },
   "BCOUSD_W": {
     "phase": "Phase 4",
@@ -1392,9 +1401,8 @@
     "timestamp": 1749882621078
   },
   "WHEATUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421473,
-    "lastUpdate": 1749940421473
+    "phase": "Phase 1",
+    "timestamp": 1749877638829
   },
   "BTCUSD_W": {
     "phase": "Phase 1",
@@ -1405,9 +1413,8 @@
     "timestamp": 1749882622075
   },
   "BTCUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421866,
-    "lastUpdate": 1749940421866
+    "phase": "Phase 1",
+    "timestamp": 1749877639920
   },
   "ETHUSD_W": {
     "phase": "Phase 4",
@@ -1418,9 +1425,8 @@
     "timestamp": 1749882622291
   },
   "ETHUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421922,
-    "lastUpdate": 1749940421922
+    "phase": "Phase 1",
+    "timestamp": 1749877640164
   },
   "LTCUSD_W": {
     "phase": "Phase 3",
@@ -1431,9 +1437,8 @@
     "timestamp": 1749882622508
   },
   "LTCUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940421988,
-    "lastUpdate": 1749940421988
+    "phase": "Phase 1",
+    "timestamp": 1749877640369
   },
   "BCHUSD_W": {
     "phase": "Phase 4",
@@ -1456,9 +1461,8 @@
     "timestamp": 1749882623063
   },
   "USB10YUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940422037,
-    "lastUpdate": 1749940422037
+    "phase": "Phase 1",
+    "timestamp": 1749877641061
   },
   "USB30YUSD_W": {
     "phase": "Phase 1",
@@ -1469,9 +1473,8 @@
     "timestamp": 1749882623281
   },
   "USB30YUSD": {
-    "phase": "Phase 3",
-    "timestamp": 1749940422107,
-    "lastUpdate": 1749940422107
+    "phase": "Phase 1",
+    "timestamp": 1749877641293
   },
   "USB05YUSD_W": {
     "phase": "Phase 1",
@@ -1484,5 +1487,10 @@
   "USB05YUSD": {
     "phase": "Phase 1",
     "timestamp": 1749877641539
+  },
+  "USB02YUSD": {
+    "phase": "Phase 1",
+    "timestamp": 1750363124415,
+    "lastUpdate": 1750363124415
   }
 }

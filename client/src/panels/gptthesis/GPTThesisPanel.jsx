@@ -5,8 +5,8 @@ import { Card, CardContent } from '../../components/ui/card';
 import { ScrollArea } from '../../components/ui/scroll-area';
 import { useSymbolContext } from '../../context/SymbolContext';
 
-export default function GPTThesisPanel() {
-  const { selectedSymbol } = useSymbolContext();
+export default function GPTThesisPanel({ selectedSymbol }) {
+  const { timeframe } = useSymbolContext();
   const [report, setReport] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -32,7 +32,7 @@ export default function GPTThesisPanel() {
         const res = await fetch('/api/gptthesis', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ symbol: selectedSymbol }),
+          body: JSON.stringify({ symbol: selectedSymbol, timeframe }),
         });
         if (!res.ok) throw new Error('GPT failed.');
         const data = await res.text();
@@ -46,7 +46,7 @@ export default function GPTThesisPanel() {
     };
 
     fetchThesis();
-  }, [selectedSymbol]);
+  }, [selectedSymbol, timeframe]);
 
   const handleAsk = async (e) => {
     e.preventDefault();
@@ -58,7 +58,7 @@ export default function GPTThesisPanel() {
       const res = await fetch('/api/gptthesis/followup', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ symbol: selectedSymbol, question }),
+        body: JSON.stringify({ symbol: selectedSymbol, question, timeframe }),
       });
       if (!res.ok) throw new Error('Follow-up failed');
       const data = await res.text();
@@ -128,6 +128,20 @@ export default function GPTThesisPanel() {
             {error && (
               <div className="text-red-400 mt-2 bg-red-900/20 p-3 rounded-lg border border-red-800">
                 {error}
+              </div>
+            )}
+
+            {report && (
+              <div className="mb-4">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg font-semibold text-sky-300">Summary</h3>
+                  <span className="text-xs text-gray-500">
+                    {/* Add logic to calculate and display the summary */}
+                  </span>
+                </div>
+                <div className="mt-2">
+                  {/* Add logic to display the summary card */}
+                </div>
               </div>
             )}
 
