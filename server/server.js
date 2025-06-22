@@ -3,14 +3,11 @@ console.log('--- SERVER STARTING ---');
 import { config } from 'dotenv';
 config();
 
-function mask(value) {
-  return value ? '***' : 'unset';
-}
-
-console.log('OPENAI_API_KEY:', mask(process.env.OPENAI_API_KEY));
-console.log('OANDA_API_KEY:', mask(process.env.OANDA_API_KEY));
-console.log('OANDA_ACCOUNT_ID:', process.env.OANDA_ACCOUNT_ID || 'unset');
-console.log('OANDA_BASE_URL:', process.env.OANDA_BASE_URL || 'unset');
+console.log('OPENAI_API_KEY:', process.env.OPENAI_API_KEY ? process.env.OPENAI_API_KEY.slice(0, 6) + '...' : undefined);
+console.log('OANDA_API_KEY:', process.env.OANDA_API_KEY);
+console.log('OANDA_ACCOUNT_ID:', process.env.OANDA_ACCOUNT_ID);
+console.log('OANDA_BASE_URL:', process.env.OANDA_BASE_URL);
+console.log('All env vars:', process.env);
 
 import express from 'express';
 import cors from 'cors';
