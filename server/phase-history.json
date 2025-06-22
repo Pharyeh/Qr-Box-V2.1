@@ -749,14 +749,14 @@
   },
   "SOYBEANUSD": {
     "phase": "Phase 2",
-    "timestamp": 1750612913125,
+    "timestamp": 1750613568100,
     "timeline": [
       {
         "phase": "Phase 2",
-        "timestamp": 1750612913125
+        "timestamp": 1750613568100
       }
     ],
-    "lastUpdate": 1750612913125
+    "lastUpdate": 1750613568100
   },
   "COFFEEUSD_W": {
     "phase": "Phase 4",
@@ -768,14 +768,14 @@
   },
   "COFFEEUSD": {
     "phase": "Phase 1",
-    "timestamp": 1750612913184,
+    "timestamp": 1750613568176,
     "timeline": [
       {
         "phase": "Phase 1",
-        "timestamp": 1750612913184
+        "timestamp": 1750613568176
       }
     ],
-    "lastUpdate": 1750612913184
+    "lastUpdate": 1750613568176
   },
   "COCOAUSD_W": {
     "phase": "Phase 1",
@@ -811,14 +811,14 @@
   },
   "COTTONUSD": {
     "phase": "Phase 1",
-    "timestamp": 1750612913360,
+    "timestamp": 1750613568663,
     "timeline": [
       {
         "phase": "Phase 1",
-        "timestamp": 1750612913360
+        "timestamp": 1750613568663
       }
     ],
-    "lastUpdate": 1750612913360
+    "lastUpdate": 1750613568663
   },
   "OJUICEUSD_W": {
     "phase": "Phase 4",
@@ -830,14 +830,14 @@
   },
   "OJUICEUSD": {
     "phase": "Phase 1",
-    "timestamp": 1750612913408,
+    "timestamp": 1750613568773,
     "timeline": [
       {
         "phase": "Phase 1",
-        "timestamp": 1750612913408
+        "timestamp": 1750613568773
       }
     ],
-    "lastUpdate": 1750612913408
+    "lastUpdate": 1750613568773
   },
   "XRPUSD_W": {
     "phase": "Phase 1",
@@ -1285,14 +1285,14 @@
   },
   "WTICOUSD": {
     "phase": "Phase 1",
-    "timestamp": 1750612912400,
+    "timestamp": 1750613567131,
     "timeline": [
       {
         "phase": "Phase 1",
-        "timestamp": 1750612912400
+        "timestamp": 1750613567131
       }
     ],
-    "lastUpdate": 1750612912400
+    "lastUpdate": 1750613567131
   },
   "NATGASUSD_W": {
     "phase": "Phase 4",
@@ -1340,14 +1340,14 @@
   },
   "US30USD": {
     "phase": "Phase 2",
-    "timestamp": 1750612912608,
+    "timestamp": 1750613567311,
     "timeline": [
       {
         "phase": "Phase 2",
-        "timestamp": 1750612912608
+        "timestamp": 1750613567311
       }
     ],
-    "lastUpdate": 1750612912608
+    "lastUpdate": 1750613567311
   },
   "US2000USD_W": {
     "phase": "Phase 1",
@@ -1359,14 +1359,14 @@
   },
   "US2000USD": {
     "phase": "Phase 2",
-    "timestamp": 1750612912661,
+    "timestamp": 1750613567388,
     "timeline": [
       {
         "phase": "Phase 2",
-        "timestamp": 1750612912661
+        "timestamp": 1750613567388
       }
     ],
-    "lastUpdate": 1750612912661
+    "lastUpdate": 1750613567388
   },
   "BCOUSD_W": {
     "phase": "Phase 4",
