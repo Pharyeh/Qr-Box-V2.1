@@ -1,43 +1,12 @@
 import { SYMBOL_MAP } from '../utils/symbolMapping.js';
 import { getYahooCandles } from '../utils/getYahooCandles.js';
 import { getOandaCandles } from '../utils/getOandaCandles.js';
-import { getPhaseInfo, updatePhaseInfo } from '../utils/phaseHistory.js';
+import { getPhaseInfo, updatePhaseInfo, loadPhaseCache, savePhaseCache } from '../utils/phaseHistory.js';
 import { detectDarvasBoxes } from '../utils/darvasBox.js';
 import cotData from '../utils/cot-latest.json' assert { type: 'json' };
+import { calculateATR, calculateStructureScore, calculateVolatilityScore, calculateReflex, wasCompressing, determinePhase, classifyBias, determinePlayType, formatDuration } from '../utils/indicators.js';
 
-const phaseCache = {};
-
-function calculateATR(candles, period = 14) {
-  const trs = candles.slice(1).map((c, i) => {
-    const prev = candles[i];
-    return Math.max(
-      c.high - c.low,
-      Math.abs(c.high - prev.close),
-      Math.abs(c.low - prev.close)
-    );
-  });
-  return trs.slice(-period).reduce((a, b) => a + b, 0) / period;
-}
-
-function calculateStructureScore(candles) {
-  const range = Math.max(...candles.map(c => c.high)) - Math.min(...candles.map(c => c.low));
-  const avgBody = candles.reduce((sum, c) => sum + Math.abs(c.close - c.open), 0) / candles.length;
-  return range > 0 ? +(avgBody / range).toFixed(3) : 0;
-}
-
-function calculateVolatilityScore(candles) {
-  const closes = candles.map(c => c.close);
-  const mean = closes.reduce((a, b) => a + b, 0) / closes.length;
-  const variance = closes.reduce((sum, c) => sum + Math.pow(c - mean, 2), 0) / closes.length;
-  return +(Math.sqrt(variance) / mean).toFixed(4);
-}
-
-function calculateReflex(candles) {
-  const latest = candles[candles.length - 1];
-  const prev = candles[candles.length - 2];
-  const raw = (latest.close - prev.close) / prev.close;
-  return Math.abs(raw) < 0.001 ? 0 : +raw.toFixed(3);
-}
+let phaseCache = loadPhaseCache();
 
 function wasCompressing(candles, threshold = 0.015) {
   const vol = calculateVolatilityScore(candles.slice(-10));
@@ -76,26 +45,16 @@ function determinePlayType(phase, reflex, volatility, structure) {
   return 'Unknown';
 }
 
-function formatDuration(msDiff) {
-  const minutes = Math.floor(msDiff / (1000 * 60));
-  const hours = Math.floor(msDiff / (1000 * 60 * 60));
-  const days = Math.floor(msDiff / (1000 * 60 * 60 * 24));
-  if (minutes < 60) return `${minutes}m`;
-  if (hours < 24) return `${hours}h`;
-  return `${days}d`;
-}
-
 export async function getPhaseMonitorData(timeframe = '1d') {
-  const results = [];
   const now = new Date();
-
-  for (const symbol of Object.keys(SYMBOL_MAP)) {
+  const symbols = Object.keys(SYMBOL_MAP);
+  const results = await Promise.all(symbols.map(async (symbol) => {
     const meta = SYMBOL_MAP[symbol];
-    const oandaData = await getOandaCandles(symbol, timeframe, 24);
-    let candles = oandaData;
-    let dataSource = 'OANDA';
-    let priceSymbol = meta.oanda || symbol;
-
+    let candles, dataSource, priceSymbol;
+    let oandaData = await getOandaCandles(symbol, timeframe, 24);
+    candles = oandaData;
+    dataSource = 'OANDA';
+    priceSymbol = meta.oanda || symbol;
     if (!oandaData || oandaData.length === 0) {
       candles = await getYahooCandles(symbol, timeframe.toLowerCase());
       dataSource = 'YahooFinance';
@@ -104,25 +63,20 @@ export async function getPhaseMonitorData(timeframe = '1d') {
       dataSource = oandaData[0].dataSource;
       priceSymbol = meta.oanda || symbol;
     }
-
     if (!candles || candles.length < 20) {
-      continue;
+      return null;
     }
-
     const baseCandles = candles.slice(-21, -1);
     const recent = candles[candles.length - 1];
     const baseHigh = Math.max(...baseCandles.map(c => c.high));
     const baseLow = Math.min(...baseCandles.map(c => c.low));
-
     const atr = calculateATR(baseCandles);
     const structure = calculateStructureScore(baseCandles);
     const reflex = calculateReflex(candles);
     const volatility = calculateVolatilityScore(baseCandles);
-
     const darvasBoxes = detectDarvasBoxes(candles, { symbol, assetClass: meta.assetClass });
     const lastBox = darvasBoxes?.[0];
     const compressed = wasCompressing(baseCandles);
-
     let isBreakout = false;
     if (lastBox?.isFreshBreakout && lastBox.direction === 1 && compressed) {
       isBreakout = true;
@@ -133,7 +87,6 @@ export async function getPhaseMonitorData(timeframe = '1d') {
     } else if (meta.assetClass === 'Forex' && compressed && reflex > 0.006 && structure > 0.08) {
       isBreakout = true;
     }
-
     let phase = determinePhase(isBreakout, baseLow, baseHigh, recent.close, atr, reflex, structure, volatility);
     let sticky = false;
     const lastScan = phaseCache[symbol] || {};
@@ -156,9 +109,8 @@ export async function getPhaseMonitorData(timeframe = '1d') {
       timestamp: now,
       bias: classifyBias(phase, reflex),
     };
-
+    savePhaseCache(phaseCache);
     const bias = classifyBias(phase, reflex);
-
     const entry = lastBox?.top || recent.close;
     let stop = 'N/A', tp1 = 'N/A', tp2 = 'N/A', rr = 0;
     if (!isNaN(entry)) {
@@ -173,7 +125,6 @@ export async function getPhaseMonitorData(timeframe = '1d') {
     const msDiff = now - (lastScan.timestamp || now);
     const freshnessScore = msDiff <= 3 * 60 * 60 * 1000 ? 10 : msDiff <= 6 * 60 * 60 * 1000 ? 5 : 0;
     const playType = determinePlayType(phase, reflex, volatility, structure);
-
     // --- COT LOGIC ---
     const cotKey = meta.cotKey;
     const cotEntry = cotData[cotKey];
@@ -186,7 +137,6 @@ export async function getPhaseMonitorData(timeframe = '1d') {
       else if (cotBias === 'Strong Bullish') cotBias = 'Strong Bearish';
       else if (cotBias === 'Strong Bearish') cotBias = 'Strong Bullish';
     }
-
     // --- PHASE HISTORY PERSISTENCE ---
     if (lastScan.phase !== phase) {
       updatePhaseInfo(symbol, phase);
@@ -194,7 +144,6 @@ export async function getPhaseMonitorData(timeframe = '1d') {
     const phaseInfo = getPhaseInfo(symbol, phase);
     const durationInPhase = phaseInfo.durationInPhase;
     const isNew = phaseInfo.isNew;
-
     const lastPhase = lastScan.phase || phase;
     const result = {
       symbol,
@@ -224,13 +173,25 @@ export async function getPhaseMonitorData(timeframe = '1d') {
       playType,
     };
     result.lastPhase = result.lastPhase || result.phase;
-    results.push(result);
-  }
-  return results;
+    return result;
+  }));
+  return results.filter(Boolean);
 }
 
 export async function scanPhaseMonitor(req, res, returnRaw = false, timeframe = '1d') {
-  const results = await getPhaseMonitorData(timeframe);
-  if (returnRaw) return results;
-  res.json(results);
+  try {
+    // Check for required API credentials
+    if (!process.env.OANDA_API_KEY || !process.env.OANDA_ACCOUNT_ID) {
+      const msg = 'OANDA API credentials are missing. Please set OANDA_API_KEY and OANDA_ACCOUNT_ID.';
+      if (returnRaw) return { error: msg };
+      return res.status(500).json({ error: msg });
+    }
+    const results = await getPhaseMonitorData(timeframe);
+    if (returnRaw) return results;
+    res.json(results);
+  } catch (err) {
+    console.error('[PhaseMonitor] Error:', err);
+    if (returnRaw) return { error: err.message };
+    res.status(500).json({ error: err.message });
+  }
 }

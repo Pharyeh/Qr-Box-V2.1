@@ -4,6 +4,7 @@ import { getOandaCandles } from '../utils/getOandaCandles.js';
 import { getYahooCandles } from '../utils/getYahooCandles.js';
 import cotData from '../utils/cot-latest.json' assert { type: 'json' };
 import { getPhaseInfo } from '../utils/phaseHistory.js';
+import { extractZone, isInsideZone, calcScore, gradeScore, calculateReflex, calculateStructureScore, calculateVolatilityScore } from '../utils/indicators.js';
 
 function calcScore({ reflex, structure, volatility, cotScore }) {
   return +(reflex * 100 + structure * 50 - volatility * 30 + cotScore).toFixed(1);
@@ -143,13 +144,11 @@ async function analyzeDualZone(symbol, candles, meta, priceSource, priceSymbol) 
   };
 }
 
-export async function getDualZoneBreakouts(req, res) {
-  const results = [];
-
-  for (const symbol of Object.keys(SYMBOL_MAP)) {
+export async function getDualZoneBreakoutsData() {
+  const symbols = Object.keys(SYMBOL_MAP);
+  const results = await Promise.all(symbols.map(async (symbol) => {
     const meta = SYMBOL_MAP[symbol];
     let result = null;
-
     try {
       const oandaCandles = await getOandaCandles(symbol, 'D', 62);
       let source = 'OANDA';
@@ -159,19 +158,35 @@ export async function getDualZoneBreakouts(req, res) {
         priceSymbol = meta.yahoo || symbol;
       }
       result = await analyzeDualZone(symbol, oandaCandles, meta, source, priceSymbol);
-    } catch (e) {}
-
+    } catch (e) {
+      console.error(`[RangeBreakout] OANDA fetch failed for ${symbol}:`, e.message);
+    }
     if (!result) {
       try {
         const yahooCandles = await getYahooCandles(symbol, 62, '1d');
         result = await analyzeDualZone(symbol, yahooCandles, meta, 'YahooFinance', meta.yahoo || symbol);
-      } catch (e) {}
+      } catch (e) {
+        console.error(`[RangeBreakout] Yahoo fetch failed for ${symbol}:`, e.message);
+      }
     }
-
     if (result && (result.phaseConfirmed || result.tag === '🟡 Micro Compression')) {
-      results.push(result);
+      return result;
     }
-  }
+    return null;
+  }));
+  return results.filter(Boolean);
+}
 
-  res.json(results);
+export async function getDualZoneBreakouts(req, res) {
+  try {
+    if (!process.env.OANDA_API_KEY || !process.env.OANDA_ACCOUNT_ID) {
+      const msg = 'OANDA API credentials are missing. Please set OANDA_API_KEY and OANDA_ACCOUNT_ID.';
+      return res.status(500).json({ error: msg });
+    }
+    const results = await getDualZoneBreakoutsData();
+    res.json(results);
+  } catch (err) {
+    console.error('[RangeBreakout] Error:', err);
+    res.status(500).json({ error: err.message });
+  }
 }

@@ -10,6 +10,7 @@ const PHASE_HISTORY_PATH = path.join(__dirname, '..', 'phase-history.json');
 const PHASE_HISTORY_TRADEIDEAS_PATH = path.join(__dirname, '..', 'phase-history-tradeideas.json');
 const PHASE_HISTORY_GPTTHESIS_PATH = path.join(__dirname, '..', 'phase-history-gptthesis.json');
 const PHASE_HISTORY_DATA_PATH = path.join(__dirname, '..', 'data', 'phase-history.json');
+const PHASE_CACHE_PATH = path.join(__dirname, '..', 'phase-cache.json');
 
 let phaseHistory = {};
 
@@ -102,5 +103,26 @@ export function updatePhaseInfo(symbol, phase) {
     phaseHistory[symbol].lastUpdate = now;
     savePhaseHistory();
     console.log(`[PhaseHistory] Updated ${symbol} → ${phase}`);
+  }
+}
+
+// Add phaseCache persistence
+export function loadPhaseCache() {
+  try {
+    if (fs.existsSync(PHASE_CACHE_PATH)) {
+      const data = fs.readFileSync(PHASE_CACHE_PATH, 'utf-8');
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    console.error('[PhaseCache] Failed to load:', err);
+  }
+  return {};
+}
+
+export function savePhaseCache(cache) {
+  try {
+    fs.writeFileSync(PHASE_CACHE_PATH, JSON.stringify(cache, null, 2));
+  } catch (err) {
+    console.error('[PhaseCache] Failed to save:', err);
   }
 }
