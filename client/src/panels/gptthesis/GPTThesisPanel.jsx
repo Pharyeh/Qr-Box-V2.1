@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
+import rehypeSanitize from 'rehype-sanitize';
 import { FiMaximize2, FiMinimize2, FiCopy, FiCheck } from 'react-icons/fi';
 import { Card, CardContent } from '../../components/ui/card';
 import { ScrollArea } from '../../components/ui/scroll-area';
@@ -169,6 +170,7 @@ export default function GPTThesisPanel({ selectedSymbol }) {
                         <strong className="font-semibold text-white bg-zinc-800/50 px-1 rounded" {...props} />
                       ),
                     }}
+                    rehypePlugins={[rehypeSanitize]}
                   >
                     {report}
                   </ReactMarkdown>
@@ -221,6 +223,7 @@ export default function GPTThesisPanel({ selectedSymbol }) {
                       <strong className="font-semibold text-white bg-zinc-800/50 px-1 rounded" {...props} />
                     ),
                   }}
+                  rehypePlugins={[rehypeSanitize]}
                 >
                   {followup}
                 </ReactMarkdown>
