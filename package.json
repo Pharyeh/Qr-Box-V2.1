@@ -11,7 +11,9 @@
     "build-client": "cd client && vite build",
     "tauri": "tauri",
     "tauri:dev": "npx tauri dev",
-    "tauri:build": "npx tauri build"
+    "tauri:build": "npx tauri build",
+    "test": "echo \"No tests specified\" && exit 0",
+    "lint": "echo \"No linting configured\" && exit 0"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.0.0-rc.18",

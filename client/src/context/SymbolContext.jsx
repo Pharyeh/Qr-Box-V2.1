@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, useRef } from 'react';
 import { fetchTradeIdeas as fetchTradeIdeasAPI } from '../api/tradeIdeas';
+import API_BASE from '../config/api';
 
 const SymbolContext = createContext();
 
@@ -36,7 +37,7 @@ export function SymbolProvider({ children }) {
     try {
       if (!silent) setLoading(true);
       setError(null);
-      const res = await fetch(`/api/phasemonitor?refresh=true&timeframe=${timeframe}`);
+      const res = await fetch(`${API_BASE}/api/phasemonitor?refresh=true&timeframe=${timeframe}`);
       if (!res.ok) throw new Error(`Failed to fetch assets: ${res.status} ${res.statusText}`);
       const json = await res.json();
       setSymbolsData(json);
