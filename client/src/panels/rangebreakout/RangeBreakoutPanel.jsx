@@ -1,48 +1,28 @@
-// RangeBreakoutPanel.jsx
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Card, CardContent } from '@/components/ui/card';
+import { formatDistanceToNow } from 'date-fns';
 import Badge from '@/components/ui/badge';
-
-const ASSET_CLASSES = ['All', 'Forex', 'Commodities', 'Crypto', 'Indices', 'Interest Rates', 'Stocks'];
-const GRADES = ['All', 'A+', 'A', 'B', 'C', 'D'];
-const SOURCES = ['All', 'OANDA', 'YahooFinance'];
-
-const getColor = (bias) => {
-  if (bias === 'Bullish') return 'border-l-4 border-green-500';
-  if (bias === 'Bearish') return 'border-l-4 border-red-500';
-  return 'border-l-4 border-gray-400';
-};
-
-const getBiasBadge = (bias) => {
-  if (bias === 'Bullish') return <Badge className="bg-green-600">🟢 Bullish</Badge>;
-  if (bias === 'Bearish') return <Badge className="bg-red-600">🔴 Bearish</Badge>;
-  return <Badge className="bg-gray-600">⚪ Neutral</Badge>;
-};
 
 export default function RangeBreakoutPanel() {
   const [breakouts, setBreakouts] = useState([]);
-  const [selectedClass, setSelectedClass] = useState('All');
-  const [selectedGrade, setSelectedGrade] = useState('All');
-  const [selectedSource, setSelectedSource] = useState('All');
 
   useEffect(() => {
     const fetchBreakouts = async () => {
       try {
-        const res = await axios.get('/api/rangebreakout');
-        setBreakouts(res.data);
+        const { data } = await axios.get('/api/rangebreakout');
+        // Sort phase-confirmed breakouts to the top
+        const sorted = [...data].sort((a, b) => {
+          if (a.phaseConfirmed && !b.phaseConfirmed) return -1;
+          if (!a.phaseConfirmed && b.phaseConfirmed) return 1;
+          return b.score - a.score;
+        });
+        setBreakouts(sorted);
       } catch (err) {
-        console.error('Error fetching dual zone breakouts:', err);
+        console.error('Failed to fetch breakout data:', err);
       }
     };
     fetchBreakouts();
   }, []);
-
-  const filtered = breakouts.filter(b =>
-    (selectedClass === 'All' || b.assetClass === selectedClass) &&
-    (selectedGrade === 'All' || b.grade === selectedGrade) &&
-    (selectedSource === 'All' || b.priceSource === selectedSource)
-  );
 
   return (
     <div className="p-4 text-white">
@@ -50,24 +30,16 @@ export default function RangeBreakoutPanel() {
         <h2 className="text-lg font-bold">Dual Zone Breakouts</h2>
         <span className="text-xs bg-zinc-800 text-zinc-300 px-2 py-0.5 rounded">Timeframe: 1D (Daily)</span>
       </div>
-      <div className="flex flex-wrap gap-2 mb-4">
-        <select value={selectedClass} onChange={e => setSelectedClass(e.target.value)} className="text-xs px-3 py-1 bg-zinc-800 text-gray-100 rounded-full">
-          {ASSET_CLASSES.map(cls => <option key={cls} value={cls}>{cls}</option>)}
-        </select>
-        <select value={selectedGrade} onChange={e => setSelectedGrade(e.target.value)} className="text-xs px-3 py-1 bg-zinc-800 text-gray-100 rounded-full">
-          {GRADES.map(g => <option key={g} value={g}>{g === 'All' ? 'All Grades' : g}</option>)}
-        </select>
-        <select value={selectedSource} onChange={e => setSelectedSource(e.target.value)} className="text-xs px-3 py-1 bg-zinc-800 text-gray-100 rounded-full">
-          {SOURCES.map(s => <option key={s} value={s}>{s === 'All' ? 'All Sources' : s}</option>)}
-        </select>
-      </div>
       <div className="max-h-[70vh] overflow-y-auto rounded border border-zinc-800">
-        <table className="w-full text-sm min-w-[900px]">
+        <table className="w-full text-sm min-w-[1100px]">
           <thead className="bg-zinc-900 text-gray-300 sticky top-0 z-10">
             <tr>
               <th className="px-2 py-1">Symbol</th>
               <th>Tag</th>
               <th>Bias</th>
+              <th>Phase</th>
+              <th>Phase Bias</th>
+              <th>Phase Duration</th>
               <th>Close</th>
               <th>Reflex</th>
               <th>Structure</th>
@@ -79,14 +51,31 @@ export default function RangeBreakoutPanel() {
             </tr>
           </thead>
           <tbody>
-            {filtered.length === 0 ? (
-              <tr><td colSpan="10" className="text-center py-4 text-gray-500">No results match current filters.</td></tr>
+            {breakouts.length === 0 ? (
+              <tr><td colSpan="14" className="text-center py-4 text-gray-500">No results match current filters.</td></tr>
             ) : (
-              filtered.map((b, i) => (
-                <tr key={i} className={i % 2 === 0 ? 'bg-zinc-800/50' : ''}>
+              breakouts.map((b, i) => (
+                <tr
+                  key={i}
+                  className={
+                    b.phaseConfirmed
+                      ? 'bg-green-900/20 font-semibold'
+                      : i % 2 === 0
+                        ? 'bg-zinc-800/50'
+                        : ''
+                  }
+                >
                   <td className="font-bold text-sky-400 px-2 py-1">{b.symbol}</td>
-                  <td><Badge label={b.tag} /></td>
+                  <td>
+                    <Badge label={b.tag} />
+                    {b.phaseConfirmed && (
+                      <span className="ml-2 px-2 py-0.5 rounded-full bg-green-700 text-white text-xs">Phase-Confirmed</span>
+                    )}
+                  </td>
                   <td><Badge label={b.directionalBias} type="bias" /></td>
+                  <td>{b.phase || '-'}</td>
+                  <td><Badge label={b.bias} type="bias" /></td>
+                  <td>{b.durationInPhase !== null && b.durationInPhase !== undefined ? b.durationInPhase + 'h' : '-'}</td>
                   <td>{b.lastClose?.toFixed(4)}</td>
                   <td>{b.reflex}</td>
                   <td>{b.structure}</td>
