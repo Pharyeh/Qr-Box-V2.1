@@ -1,4 +1,8 @@
-# QR Box
+# QR Box v2.1
+
+**Copyright (c) 2024 Pharyeh Nation. All rights reserved.**
+
+This software is proprietary and confidential. No part of this project may be reproduced, distributed, or transmitted in any form or by any means, without the prior written permission of the copyright holder.
 
 A powerful dashboard for tracking market phases, generating trade ideas, and providing AI-driven insights.
 
