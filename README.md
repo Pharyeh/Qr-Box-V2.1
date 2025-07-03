@@ -38,6 +38,17 @@ A cross-platform trading dashboard built with Electron, React, TypeScript, and E
 
 ### Installation
 
+#### Quick Setup (Recommended)
+```bash
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/qr-box-demo.git
+cd qr-box-demo
+
+# Run the setup script
+npm run setup
+```
+
+#### Manual Setup
 ```bash
 # Clone the repository
 git clone https://github.com/YOUR_USERNAME/qr-box-demo.git

@@ -10,6 +10,7 @@
     "client": "cd client && vite",
     "server": "cd server && node server.js",
     "build-client": "cd client && vite build",
+    "setup": "node setup-demo.js",
     "tauri": "tauri",
     "tauri:dev": "npx tauri dev",
     "tauri:build": "npx tauri build",
