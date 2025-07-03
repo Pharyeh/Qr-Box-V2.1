@@ -1,5 +1,8 @@
 # QR Box Demo
 
+> **⚠️ Note:**
+> This public demo repository contains only placeholder logic for phase detection, trade idea generation, and AI thesis. The real proprietary strategy code is private and not included here.
+
 A cross-platform trading dashboard built with Electron, React, TypeScript, and Express.
 
 ## 🧠 Key Features
