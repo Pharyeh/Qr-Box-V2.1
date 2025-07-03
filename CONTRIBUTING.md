@@ -7,7 +7,7 @@ Thank you for your interest in contributing to QR Box Demo! This document provid
 1. **Fork the repository** on GitHub
 2. **Clone your fork** locally:
    ```bash
-   git clone https://github.com/pharyeh/qr-box.git
+   git clone https://github.com/pharyeh/Qr-Box-V2.1.git
    cd qr-box-demo
    ```
 3. **Set up the development environment**:
