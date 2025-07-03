@@ -17,7 +17,7 @@ We take security vulnerabilities seriously. If you discover a security vulnerabi
 Security vulnerabilities should be reported privately to prevent potential exploitation.
 
 ### 2. **Email us directly**
-Send an email to [your-email@example.com] with the following information:
+Send an email to [pharyehnation@gmail.com] with the following information:
 - **Subject:** `[SECURITY] QR Box Demo Vulnerability Report`
 - **Description:** Detailed description of the vulnerability
 - **Steps to reproduce:** Clear steps to reproduce the issue
