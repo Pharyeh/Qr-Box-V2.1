@@ -5,6 +5,7 @@ import { FiMaximize2, FiMinimize2, FiCopy, FiCheck } from 'react-icons/fi';
 import { Card, CardContent } from '../../components/ui/card';
 import { ScrollArea } from '../../components/ui/scroll-area';
 import { useSymbolContext } from '../../context/SymbolContext';
+import API_BASE from '../../config/api';
 
 export default function GPTThesisPanel({ selectedSymbol }) {
   const { timeframe } = useSymbolContext();
@@ -30,7 +31,7 @@ export default function GPTThesisPanel({ selectedSymbol }) {
       setError('');
       setReport('');
       try {
-        const res = await fetch('/api/gptthesis', {
+        const res = await fetch(`${API_BASE}/api/gptthesis`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ symbol: selectedSymbol, timeframe }),
@@ -234,4 +235,4 @@ export default function GPTThesisPanel({ selectedSymbol }) {
       </Card>
     </div>
   );
-}
+} 

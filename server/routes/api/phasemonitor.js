@@ -44,12 +44,13 @@ router.get('/history', (req, res) => {
     const historyPath = path.join(__dirname, '../../phase-history.json');
     if (!fs.existsSync(historyPath)) return res.json([]);
     const raw = JSON.parse(fs.readFileSync(historyPath, 'utf-8'));
-    const entries = [];
-    // If symbol has a timeline array, return it; else, fallback to single entry
+    let entries = [];
+    // If symbol has a timeline array, return it; else, fallback to single entry as a timeline
     if (raw[symbol]?.timeline && Array.isArray(raw[symbol].timeline)) {
-      raw[symbol].timeline.forEach(e => entries.push({ phase: e.phase, timestamp: e.timestamp }));
+      entries = raw[symbol].timeline.map(e => ({ phase: e.phase, timestamp: e.timestamp }));
     } else if (raw[symbol]) {
-      entries.push({ phase: raw[symbol].phase, timestamp: raw[symbol].timestamp });
+      // Return a single-entry timeline if phase data exists
+      entries = [{ phase: raw[symbol].phase, timestamp: raw[symbol].timestamp }];
     }
     res.json(entries);
   } catch (e) {

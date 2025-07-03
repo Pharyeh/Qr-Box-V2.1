@@ -11,8 +11,8 @@ const COLOR_MAP = {
     Bullish: 'bg-green-800 text-green-100',
     'Extremely Bullish': 'bg-green-900 text-green-100',
     'Extreme Bullish': 'bg-green-900 text-green-100',
-    Neutral: 'bg-gray-700 text-gray-300',
-    Bearish: 'bg-yellow-700 text-yellow-100',
+    Neutral: 'bg-yellow-600 text-yellow-100',
+    Bearish: 'bg-red-800 text-red-100',
     'Strong Bearish': 'bg-red-700 text-white border border-red-500',
     'Extremely Bearish': 'bg-red-900 text-red-100',
     'Extreme Bearish': 'bg-red-900 text-red-100',
@@ -21,7 +21,7 @@ const COLOR_MAP = {
   phase: {
     'Phase 1': 'bg-gray-700 text-gray-200',
     'Phase 2': 'bg-green-800 text-green-100',
-    'Phase 3': 'bg-amber-700 text-amber-100',
+    'Phase 3': 'bg-yellow-700 text-yellow-100',
     'Phase 4': 'bg-red-800 text-red-100'
   }
 };

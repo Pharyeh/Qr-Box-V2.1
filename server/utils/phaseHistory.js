@@ -68,12 +68,26 @@ function savePhaseHistory() {
   }
 }
 
+// Helper to count trading days (excludes weekends)
+function countTradingDays(start, end) {
+  let count = 0;
+  let current = new Date(start);
+  end = new Date(end);
+  while (current <= end) {
+    const day = current.getDay();
+    if (day !== 0 && day !== 6) count++; // 0 = Sunday, 6 = Saturday
+    current.setDate(current.getDate() + 1);
+  }
+  return count;
+}
+
 // Retrieve current phase info
 export function getPhaseInfo(symbol, currentPhase) {
   const info = phaseHistory[symbol];
   if (!info) {
     return {
       durationInPhase: 0,
+      tradingDaysInPhase: 0,
       isNew: true
     };
   }
@@ -81,10 +95,12 @@ export function getPhaseInfo(symbol, currentPhase) {
   const now = Date.now();
   const timestamp = info.timestamp || info.enteredAt;
   const durationInPhase = timestamp ? Math.floor((now - timestamp) / (1000 * 60 * 60)) : 0;
+  const tradingDaysInPhase = timestamp ? countTradingDays(timestamp, now) : 0;
   
   return {
     ...info,
     durationInPhase,
+    tradingDaysInPhase,
     isNew: info.phase !== currentPhase
   };
 }

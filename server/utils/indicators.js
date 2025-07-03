@@ -51,10 +51,14 @@ export function determinePhase(isBreakout, baseLow, baseHigh, close, atr, reflex
   return 'Phase 1';
 }
 
-export function classifyBias(phase, reflex) {
-  if (Math.abs(reflex) < 0.0015) return 'Neutral';
-  if (phase === 'Phase 2' || phase === 'Phase 3') return reflex > 0 ? 'Bullish' : 'Bearish';
-  if (phase === 'Phase 4') return reflex < 0 ? 'Bearish' : 'Bullish';
+export function classifyBias(phase, reflex, reflexHistory = []) {
+  // Smoothing: use last 3 reflex values if provided
+  const history = reflexHistory.length >= 3 ? reflexHistory.slice(-3) : [reflex];
+  const bullishCount = history.filter(r => r > 0.005).length;
+  const bearishCount = history.filter(r => r < -0.005).length;
+
+  if (bullishCount >= 2) return 'Bullish';
+  if (bearishCount >= 2) return 'Bearish';
   return 'Neutral';
 }
 

@@ -10,20 +10,10 @@ export function loadCOTSentiment(symbol) {
 
   const data = JSON.parse(fs.readFileSync(COT_PATH, 'utf8'));
   const entry = data[symbol];
-  if (!entry || !entry.netNonComm) return { cotBias: 'Neutral', cotScore: null };
-
-  const score = entry.netNonComm;
-
-  let label = 'Neutral';
-  if (score >= 80000) label = 'Extreme Bullish';
-  else if (score >= 50000) label = 'Strong Bullish';
-  else if (score >= 20000) label = 'Bullish';
-  else if (score <= -80000) label = 'Extreme Bearish';
-  else if (score <= -50000) label = 'Strong Bearish';
-  else if (score <= -20000) label = 'Bearish';
+  if (!entry || typeof entry.netNonComm !== 'number') return { cotBias: 'No COT', cotScore: null };
 
   return {
-    cotBias: label,
-    cotScore: score,
+    cotBias: entry.cotSentiment || 'Neutral',
+    cotScore: entry.cotScore || entry.netNonComm,
   };
 }

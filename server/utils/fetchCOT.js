@@ -187,7 +187,13 @@ async function fetchAndParseCOT() {
   else console.log('🎯 All mapped symbols processed successfully.');
 }
 
-fetchAndParseCOT().catch(err => {
-  console.error('COT fetch/parse error:', err);
-  process.exit(1);
-});
+export async function fetchCOT() {
+  // ... move all logic from fetchAndParseCOT here ...
+}
+
+if (import.meta.url === `file://${process.argv[1]}`) {
+  fetchCOT().catch(err => {
+    console.error('COT fetch/parse error:', err);
+    process.exit(1);
+  });
+}

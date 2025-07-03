@@ -1,20 +1,19 @@
-import openai from '../utils/openaiClient.js'; 
+import { getOpenAIClient } from '../utils/openaiClient.js';
 import { scanPhaseMonitor } from './phasemonitor.js';
+import { getOandaCandles } from '../utils/getOandaCandles.js';
+import { getYahooCandles } from '../utils/getYahooCandles.js';
 
 function formatThesisPrompt(asset) {
   const {
-    symbol, bias, phase, cotBias, reflex, structure, volatility,
-    durationInPhase, levels, playType, priceSource, priceSymbol
+    symbol, primary, priceSource, priceSymbol
   } = asset;
-
+  const { phase, bias, cotBias, reflex, structure, volatility, durationInPhase, levels, playType, source } = primary || {};
   const { entry, stop, tp1, tp2, rr } = levels || {};
-
   const volRank = volatility < 0.005
     ? 'Low Volatility Setup'
     : volatility > 0.02
       ? 'High Volatility Risk'
       : 'Normal Volatility Conditions';
-
   return `
 📍 Asset Overview
 🚩 ${symbol}
@@ -22,9 +21,9 @@ Bias: ${bias} / COT: ${cotBias}
 Phase: ${phase} (${durationInPhase})
 Play Type: ${playType || 'N/A'}
 Reward/Risk Estimate: ${rr || 'N/A'}
-Data Confidence: Based on 20 recent candles (H1/D1 composite)
+Data Confidence: Based on 20 recent candles (H4/D1 composite)
 
-💡 Price Source: ${priceSource || 'Unknown'} (${priceSymbol || 'N/A'})
+💡 Price Source: ${source || priceSource || 'Unknown'} (${priceSymbol || 'N/A'})
 
 🧠 Strategic Thesis
 Use reflex, structure, and volatility to determine how the asset is likely to behave next. Consider market psychology for breakout, fade, or reversal behavior.
@@ -76,6 +75,7 @@ export async function generateGptThesis(req, res) {
     }
 
     const prompt = formatThesisPrompt(phaseMeta);
+    const openai = getOpenAIClient();
     const response = await openai.chat.completions.create({
       model: 'gpt-4-turbo',
       messages: [{ role: 'user', content: prompt }],
@@ -110,6 +110,7 @@ export async function gptThesisFollowup(req, res) {
     const context = formatThesisPrompt(phaseMeta);
     const followupPrompt = `You are a strategic trading assistant. Here is the context for ${symbol}:\n${context}\n\nUser follow-up question: ${question}\n\nAnswer clearly and concisely.`;
 
+    const openai = getOpenAIClient();
     const response = await openai.chat.completions.create({
       model: 'gpt-4-turbo',
       messages: [

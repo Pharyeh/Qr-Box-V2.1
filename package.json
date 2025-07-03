@@ -3,6 +3,7 @@
   "version": "2.1.0",
   "description": "QR Box Desktop Dashboard",
   "author": "Pharyeh Nation",
+  "main": "main.cjs",
   "type": "module",
   "scripts": {
     "dev": "concurrently \"npm run client\" \"npm run server\"",
@@ -13,7 +14,8 @@
     "tauri:dev": "npx tauri dev",
     "tauri:build": "npx tauri build",
     "test": "echo \"No tests specified\" && exit 0",
-    "lint": "echo \"No linting configured\" && exit 0"
+    "lint": "echo \"No linting configured\" && exit 0",
+    "update-cot": "node server/utils/fetchCOT.js"
   },
   "devDependencies": {
     "@tauri-apps/cli": "^2.0.0-rc.18",
@@ -21,10 +23,14 @@
   },
   "dependencies": {
     "axios": "^1.9.0",
+    "bottleneck": "^2.19.5",
     "csv-parse": "^5.5.3",
     "csv-stringify": "^6.4.5",
+    "dotenv": "^17.0.0",
     "jspdf": "^3.0.1",
     "lodash.isequal": "^4.5.0",
+    "node-cron": "^4.1.1",
+    "node-fetch": "^3.3.2",
     "react-icons": "^5.5.0",
     "react-markdown": "^10.1.0",
     "react-resizable-panels": "^3.0.2",

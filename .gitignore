@@ -27,4 +27,25 @@ yarn-error.log*
 .vscode/
 *.swp
 *.swo
-.DS_Store 
+.DS_Store
+
+# Sensitive data files
+server/phase-cache.json
+server/phase-history*.json
+server/data/phase-history*.json
+server/data/trade-log.json
+
+# Results and backtesting data
+results/
+
+# Backtesting and testing scripts (not for demo)
+backtest*.js
+check_phase*.js
+debug_metrics.js
+test_*.js
+optimize_filters.py
+plot_*.py
+
+# Temporary files
+*.tmp
+*.temp 

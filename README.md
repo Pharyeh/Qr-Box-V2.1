@@ -1,85 +1,140 @@
-# QR Box v2.1
+# QR Box Demo
 
-**Copyright (c) 2024 Pharyeh Nation. All rights reserved.**
+A cross-platform trading dashboard built with Electron, React, TypeScript, and Express.
 
-This software is proprietary and confidential. No part of this project may be reproduced, distributed, or transmitted in any form or by any means, without the prior written permission of the copyright holder.
+## 🧠 Key Features
 
-A powerful dashboard for tracking market phases, generating trade ideas, and providing AI-driven insights.
+- **Electron-based desktop app** - Cross-platform trading dashboard
+- **Modular React dashboard panels** - Phase Monitor, Trade Ideas, and GPT Thesis
+- **Real-time market signal scanner** - Track market phases across multiple assets
+- **TypeScript across frontend and backend** - Type-safe development
+- **Auto-refresh, CSV export, dark mode** - Professional trading interface
+- **Multi-timeframe analysis** - Comprehensive market analysis tools
 
-## Installation
+## 🚀 Tech Stack
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/yourusername/qr-box.git
-   cd qr-box
-   ```
+- **Frontend:** React + TypeScript + Vite + Tailwind CSS
+- **Backend:** Node.js + Express + TypeScript
+- **Desktop:** Electron.js
+- **Data Sources:** OANDA API, Yahoo Finance, OpenAI GPT
+- **UI Components:** Radix UI, Heroicons, React Sparklines
 
-2. Install dependencies:
-   ```bash
-   # Install backend dependencies
-   cd server
-   npm install
+## 🖥️ Demo Preview
 
-   # Install frontend dependencies
-   cd ../client
-   npm install
-   ```
+> A powerful trading dashboard that combines technical analysis with AI-driven insights
 
-3. Set up environment variables:
-   - Create a `.env` file in the `server` directory.
-   - Add your OpenAI API key:
-     ```
-     OPENAI_API_KEY=your_api_key_here
-     ```
+### Features Overview:
+- **Phase Monitor:** Real-time market phase tracking for 30+ assets
+- **Trade Ideas:** AI-generated trading opportunities with risk analysis
+- **GPT Thesis:** Advanced market insights using OpenAI integration
+- **Multi-timeframe Analysis:** Comprehensive market analysis across timeframes
+- **Export Capabilities:** CSV export for backtesting and analysis
 
-## Running the App
+## 🛠️ Running the App
 
-1. Start the backend server:
-   ```bash
-   cd server
-   npm start
-   ```
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
 
-2. Start the frontend development server:
-   ```bash
-   cd client
-   npm run dev
-   ```
+### Installation
 
-3. Open your browser and navigate to `http://localhost:5173/`.
+```bash
+# Clone the repository
+git clone https://github.com/YOUR_USERNAME/qr-box-demo.git
+cd qr-box-demo
 
-## Features
+# Install dependencies
+npm install
 
-- **Phase Monitor:** Track market phases for assets. The data source for each asset (OANDA or YahooFinance) is now accurately shown in the dashboard, reflecting the true provider for each symbol.
-- **Trade Ideas:** Generate trade ideas based on market data.
-- **GPT Thesis:** Get AI-driven insights with hybrid memory and caching.
+# Install client dependencies
+cd client && npm install && cd ..
 
-## Data Sources
+# Install server dependencies  
+cd server && npm install && cd ..
+```
 
-- The backend determines the data source for each asset dynamically:
-  - If OANDA data is available, it is used and the source is set to `OANDA`.
-  - If OANDA data is not available, Yahoo Finance is used and the source is set to `YahooFinance`.
-- The frontend displays the correct source for each row in the Phase Monitor table.
+### Environment Setup
 
-## API Endpoints
+Create a `.env` file in the `server` directory:
 
-- **Phase Monitor:**
-  - `GET /api/phasemonitor`: Get phase data for assets.
+```bash
+# Required for AI features
+OPENAI_API_KEY=your_openai_api_key_here
 
-- **Trade Ideas:**
-  - `GET /api/tradeideas`: Get trade ideas based on market data.
+# Optional: For enhanced data
+OANDA_API_KEY=your_oanda_api_key_here
+OANDA_ACCOUNT_ID=your_oanda_account_id_here
+TINGO_API_KEY=your_tingo_api_key_here
+```
 
-- **GPT Thesis:**
-  - `GET /api/gptthesis?symbol=<symbol>`: Get AI-generated insights for a specific asset.
+### Development
 
-## Contributing
+```bash
+# Run both client and server in development mode
+npm run dev
 
-1. Fork the repository.
-2. Create a new branch: `git checkout -b feature/your-feature-name`.
-3. Commit your changes: `git commit -m 'Add your feature'`.
-4. Push to the branch: `git push origin feature/your-feature-name`.
-5. Submit a pull request.
+# Or run separately:
+npm run client  # Frontend dev server
+npm run server  # Backend API server
+```
 
-## License
+### Building
 
-This project is licensed under the MIT License. 
+```bash
+# Build the client
+npm run build-client
+
+# Build with Tauri (optional)
+npm run tauri:build
+```
+
+## 📁 Project Structure
+
+```
+qr-box-demo/
+├── client/                 # React frontend
+│   ├── src/
+│   │   ├── components/     # UI components
+│   │   ├── panels/         # Dashboard panels
+│   │   ├── api/           # API integration
+│   │   └── utils/         # Frontend utilities
+├── server/                # Express backend
+│   ├── controllers/       # API controllers
+│   ├── routes/           # API routes
+│   ├── utils/            # Backend utilities
+│   └── data/             # Data storage
+└── results/              # Backtesting results
+```
+
+## 🔧 API Endpoints
+
+- `GET /api/phasemonitor` - Get market phase data
+- `GET /api/tradeideas` - Get AI-generated trade ideas  
+- `GET /api/gptthesis?symbol=<symbol>` - Get AI insights for specific asset
+
+## 🎯 Use Cases
+
+- **Day Trading:** Real-time market phase monitoring
+- **Swing Trading:** Multi-timeframe analysis and trade ideas
+- **Research:** AI-powered market insights and thesis generation
+- **Backtesting:** Export data for strategy validation
+
+## 🤝 Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature/amazing-feature`
+3. Commit your changes: `git commit -m 'Add amazing feature'`
+4. Push to the branch: `git push origin feature/amazing-feature`
+5. Open a Pull Request
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+## ⚠️ Disclaimer
+
+This software is for educational and research purposes only. Trading involves substantial risk of loss and is not suitable for all investors. Past performance does not guarantee future results.
+
+---
+
+**Built with ❤️ for the trading community** 

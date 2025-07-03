@@ -1,6 +1,8 @@
 import axios from 'axios';
 import { SYMBOL_MAP } from './symbolMapping.js';
 import { getYahooCandles } from './getYahooCandles.js';
+// import { getTradovateCandles } from './getTradovateCandles.js';
+import Bottleneck from 'bottleneck';
 
 // Map TradingView/Yahoo granularities to OANDA granularities
 const GRANULARITY_MAP = {
@@ -73,6 +75,45 @@ const OANDA_SYMBOL_MAP = {
     USB05YUSD: 'USB05Y_USD',
 };
   
+// --- In-memory cache for OANDA candles ---
+const oandaCache = new Map();
+const cacheMinutes = parseInt(process.env.OANDA_CACHE_MINUTES, 10) || 10;
+function getOandaCacheKey(symbol, granularity, count) {
+  return JSON.stringify({ symbol, granularity, count });
+}
+function getFromOandaCache(key) {
+  const entry = oandaCache.get(key);
+  if (!entry) return null;
+  if (Date.now() - entry.ts > cacheMinutes * 60 * 1000) {
+    oandaCache.delete(key);
+    return null;
+  }
+  return entry.data;
+}
+function setOandaCache(key, data) {
+  oandaCache.set(key, { data, ts: Date.now() });
+}
+
+const limiter = new Bottleneck({ minTime: 300, maxConcurrent: 1 });
+
+async function safeRequest(fetchFn, args) {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    try {
+      return await fetchFn(...args);
+    } catch (err) {
+      if (err.response?.status === 429) {
+        const waitTime = err.response.headers['retry-after']
+          ? parseInt(err.response.headers['retry-after'], 10) * 1000
+          : 2000 * (attempt + 1);
+        console.warn(`429 received. Retrying in ${waitTime}ms...`);
+        await new Promise(res => setTimeout(res, waitTime));
+      } else {
+        throw err;
+      }
+    }
+  }
+  throw new Error('Max retries exceeded.');
+}
 
 /**
  * Fetch candles from OANDA REST API or Alpha Vantage
@@ -81,12 +122,21 @@ const OANDA_SYMBOL_MAP = {
  * @param {number} count - number of candles to fetch
  * @returns {Promise<Array>} Array of candle objects [{ time, open, high, low, close, volume }]
  */
-export async function getOandaCandles(symbol, granularity = 'M5', count = 100) {
+export async function getOandaCandles(symbol, granularity = 'M5', count =100) {
+  const cacheKey = getOandaCacheKey(symbol, granularity, count);
+  const cached = getFromOandaCache(cacheKey);
+  if (cached) {
+    console.log(`[OANDA Cache] Cache hit for ${symbol} (${granularity}, ${count})`);
+    return cached;
+  } else {
+    console.log(`[OANDA Cache] Cache miss for ${symbol} (${granularity}, ${count})`);
+  }
   const symbolInfo = SYMBOL_MAP[symbol];
+  // BYPASS TRADOVATE: Only use OANDA or Yahoo
   if (!symbolInfo?.oanda) {
-    // Not supported by OANDA, use Yahoo Finance with mapped interval
-    const interval = YAHOO_INTERVAL_MAP[granularity] || '1d';
-    return await getYahooCandles(symbol, count, interval);
+    // Not supported by OANDA, do not attempt Yahoo fallback for non-stocks
+    console.warn(`[OANDA] ${symbol}: Not supported by OANDA, returning null (no Yahoo fallback)`);
+    return null;
   }
 
   const OANDA_API_KEY = process.env.OANDA_API_KEY;
@@ -105,6 +155,7 @@ export async function getOandaCandles(symbol, granularity = 'M5', count = 100) {
   const oandaGranularity = GRANULARITY_MAP[granularity] || granularity;
   const url = `${OANDA_API_URL}/instruments/${instrument}/candles`;
   try {
+    console.log(`[OANDA] Fetching ${count} candles for ${symbol} (${instrument}) at ${oandaGranularity}`);
     const res = await axios.get(url, {
       headers: { 'Authorization': `Bearer ${OANDA_API_KEY}` },
       params: {
@@ -114,9 +165,10 @@ export async function getOandaCandles(symbol, granularity = 'M5', count = 100) {
       },
     });
     if (!res.data.candles || res.data.candles.length === 0) {
+      console.warn(`[OANDA] ${symbol}: No candles returned`);
       return [];
     }
-    return res.data.candles.filter(c => c.complete).map(c => ({
+    const candles = res.data.candles.filter(c => c.complete).map(c => ({
       time: c.time,
       open: parseFloat(c.mid.o),
       high: parseFloat(c.mid.h),
@@ -125,8 +177,46 @@ export async function getOandaCandles(symbol, granularity = 'M5', count = 100) {
       volume: c.volume,
       dataSource: 'OANDA',
     }));
+    console.log(`[OANDA] ${symbol}: Fetched ${candles.length} candles`);
+    setOandaCache(cacheKey, candles);
+    return candles;
   } catch (err) {
     console.error(`[OANDA ERROR] ${symbol}:`, err.response?.data || err.message);
     return [];
   }
+}
+
+export const getOandaCandlesThrottled = limiter.wrap((...args) => safeRequest(getOandaCandles, args));
+
+/**
+ * Fetch candles from OANDA in chunks to bypass the 5000 candle limit.
+ * @param {string} symbol
+ * @param {string} granularity
+ * @param {number} count
+ * @returns {Promise<Array>} Array of candle objects
+ */
+export async function getOandaCandlesChunked(symbol, granularity = 'D', count = 100) {
+  const MAX_PER_REQUEST = 5000;
+  let allCandles = [];
+  let remaining = count;
+  let to = undefined;
+  while (remaining > 0) {
+    const thisCount = Math.min(remaining, MAX_PER_REQUEST);
+    const params = [symbol, granularity, thisCount];
+    // If we have a 'to' date, fetch up to that date (exclusive)
+    if (to) params.push({ to });
+    let candles = await getOandaCandles(symbol, granularity, thisCount);
+    if (!candles || candles.length === 0) break;
+    // If fetching backwards, sort oldest to newest
+    candles = candles.sort((a, b) => new Date(a.time) - new Date(b.time));
+    // Remove overlap if any
+    if (allCandles.length && candles[0].time === allCandles[allCandles.length - 1].time) {
+      candles.shift();
+    }
+    allCandles = allCandles.concat(candles);
+    remaining -= candles.length;
+    if (candles.length < thisCount) break; // No more data
+    to = candles[0].time; // Next chunk: fetch up to the earliest candle
+  }
+  return allCandles.slice(-count);
 } 
