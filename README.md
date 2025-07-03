@@ -11,17 +11,13 @@ A cross-platform trading dashboard built with Electron, React, TypeScript, and E
 - **Auto-refresh, CSV export, dark mode** - Professional trading interface
 - **Multi-timeframe analysis** - Comprehensive market analysis tools
 
-## 🚀 Tech Stack
-
-- **Frontend:** React + TypeScript + Vite + Tailwind CSS
-- **Backend:** Node.js + Express + TypeScript
-- **Desktop:** Electron.js
-- **Data Sources:** OANDA API, Yahoo Finance, OpenAI GPT
-- **UI Components:** Radix UI, Heroicons, React Sparklines
-
 ## 🖥️ Demo Preview
 
-> A powerful trading dashboard that combines technical analysis with AI-driven insights
+<div align="center">
+  <img src="https://via.placeholder.com/800x400/1f2937/ffffff?text=QR+Box+Demo+Dashboard" alt="QR Box Demo Dashboard" width="800"/>
+  
+  *A powerful trading dashboard that combines technical analysis with AI-driven insights*
+</div>
 
 ### Features Overview:
 - **Phase Monitor:** Real-time market phase tracking for 30+ assets
@@ -29,6 +25,14 @@ A cross-platform trading dashboard built with Electron, React, TypeScript, and E
 - **GPT Thesis:** Advanced market insights using OpenAI integration
 - **Multi-timeframe Analysis:** Comprehensive market analysis across timeframes
 - **Export Capabilities:** CSV export for backtesting and analysis
+
+## 🚀 Tech Stack
+
+- **Frontend:** React + TypeScript + Vite + Tailwind CSS
+- **Backend:** Node.js + Express + TypeScript
+- **Desktop:** Electron.js
+- **Data Sources:** OANDA API, Yahoo Finance, OpenAI GPT
+- **UI Components:** Radix UI, Heroicons, React Sparklines
 
 ## 🛠️ Running the App
 
