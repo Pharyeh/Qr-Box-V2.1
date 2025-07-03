@@ -34,75 +34,32 @@ function calculateScore(item) {
 }
 
 export async function buildTradeIdeas() {
-  const { getPhaseMonitorData } = await import('./phasemonitor.js');
-  const results = await getPhaseMonitorData(false);
-
-  const tradeIdeas = [];
-
-  for (const item of results) {
-    try {
-      if (!item) continue;
-      // Only include Phase 2 (breakout) or Phase 1.8 Pre-Breakout Watch
-      const isBreakout = item.phase === 'Phase 2';
-      const isPreBreakout = item.phase === 'Phase 1.8' && item.setupType && item.setupType.startsWith('Pre-Breakout');
-      if (!isBreakout && !isPreBreakout) continue;
-
-      const meta = SYMBOL_MAP[item.symbol];
-      const assetClass = meta?.assetClass || 'Unknown';
-      let candles = null;
-
-      if (assetClass === 'Stocks') {
-        candles = await getYahooCandles(item.symbol, '1d');
-        if (!candles || candles.length < 100) {
-          try {
-            const { getTingoCandles } = await import('../utils/getTingoCandles.js');
-            candles = await getTingoCandles(item.symbol, 250);
-          } catch (e) {
-            console.warn(`[TradeIdeas] ${item.symbol}: Tiingo fallback failed (${e.message})`);
-          }
-        }
-      } else {
-        candles = await getOandaCandles(item.symbol, 'D', 250);
-      }
-
-      if (!candles || candles.length < 100) {
-        console.warn(`[TradeIdeas] ${item.symbol}: Not enough candles`);
-        continue;
-      }
-
-      const score = calculateScore(item);
-      const volWarning = item.volatility >= 0.015;
-      const cotWarning = item.cotBias === 'No COT' || item.cotBias === 'Neutral';
-
-      tradeIdeas.push({
-        symbol: item.symbol,
-        phase: item.phase,
-        bias: item.bias,
-        reflex: item.reflex,
-        structure: item.structure,
-        volatility: item.volatility,
-        cotBias: item.cotBias,
-        cotScore: item.cotScore ?? null,
-        score,
-        grade: score >= 90 ? 'A+' : score >= 80 ? 'A' : score >= 70 ? 'B' : 'C',
-        rr: item.levels?.rr || 0,
-        cotWarning,
-        volWarning,
-        breakout: isBreakout,
-        setupType: item.setupType,
-        breakoutDirection: item.breakoutDirection,
-        assetClass,
-        priceSource: item.priceSource,
-        sparkline: item.sparkline
-      });
-
-    } catch (err) {
-      console.error(`[TradeIdeas] ${item.symbol}: Error generating idea`, err);
+  // 🚫 Proprietary trade idea generation logic removed for public demo.
+  // This function would normally analyze market data and generate trade ideas.
+  // For demo purposes, we return static or random data.
+  return [
+    {
+      symbol: 'EURUSD',
+      phase: 'Demo Phase',
+      bias: 'Neutral',
+      reflex: 50,
+      structure: 50,
+      volatility: 0.01,
+      cotBias: 'Neutral',
+      cotScore: 50,
+      score: 75,
+      grade: 'B',
+      rr: 1.5,
+      cotWarning: false,
+      volWarning: false,
+      breakout: false,
+      setupType: 'Demo',
+      breakoutDirection: 'None',
+      assetClass: 'FX',
+      priceSource: 'Demo',
+      sparkline: []
     }
-  }
-
-  tradeIdeas.sort((a, b) => b.score - a.score);
-  return tradeIdeas;
+  ];
 }
 
 export async function getTradeIdeas(req, res) {

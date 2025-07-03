@@ -58,44 +58,10 @@ Phase 1: Compression → Phase 2: Breakout → Phase 3: Euphoria → Phase 4: Re
 }
 
 export async function generateGptThesis(req, res) {
-  const { symbol } = req.body;
-  if (!symbol) return res.status(400).send('Symbol is required.');
-
-  try {
-    const scanData = await scanPhaseMonitor(req, res, true);
-    if (!Array.isArray(scanData)) {
-      if (!res.headersSent) res.status(500).send('Internal error: Data not available.');
-      return;
-    }
-
-    const phaseMeta = scanData.find(item => item.symbol === symbol);
-    if (!phaseMeta) {
-      if (!res.headersSent) res.status(404).send('Asset not found.');
-      return;
-    }
-
-    const prompt = formatThesisPrompt(phaseMeta);
-    const openai = getOpenAIClient();
-    const response = await openai.chat.completions.create({
-      model: 'gpt-4-turbo',
-      messages: [{ role: 'user', content: prompt }],
-      temperature: 0.7,
-    });
-
-    const gptMessage = response?.choices?.[0]?.message;
-    const gptContent = typeof gptMessage === 'object' && gptMessage.content ? gptMessage.content : null;
-
-    if (!gptContent) {
-      console.error('GPT API response missing content:', response);
-      if (!res.headersSent) res.status(500).send('GPT API response invalid.');
-      return;
-    }
-
-    res.send(gptContent);
-  } catch (err) {
-    console.error('GPT Error:', err);
-    if (!res.headersSent) res.status(500).send(err.message);
-  }
+  // 🚫 Proprietary GPT thesis logic removed for public demo.
+  // This function would normally use AI to generate a market thesis based on proprietary signals.
+  // For demo purposes, we return static demo content.
+  res.send('Demo GPT Thesis: This is a placeholder. Real logic is private.');
 }
 
 export async function gptThesisFollowup(req, res) {
