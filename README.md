@@ -17,7 +17,7 @@ A cross-platform trading dashboard built with Electron, React, TypeScript, and E
 ## 🖥️ Demo Preview
 
 <div align="center">
-  <img src="https://via.placeholder.com/800x400/1f2937/ffffff?text=QR+Box+Demo+Dashboard" alt="QR Box Demo Dashboard" width="800"/>
+  <img src="./Qr%20Box%20Dashboard.png" alt="QR Box Demo Dashboard" width="800"/>
   
   *A powerful trading dashboard that combines technical analysis with AI-driven insights*
 </div>
